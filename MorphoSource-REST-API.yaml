@@ -1,0 +1,1514 @@
+openapi: 3.1.0
+x-stoplight:
+  id: rm6bqdolcidct
+info:
+  title: MorphoSource REST API
+  version: 0.1.0
+  summary: MorphoSource REST API to retrieve metadata for repository records
+  contact:
+    name: Julie Winchester
+    url: 'https://www.morphosource.org'
+    email: julie.winchester@duke.edu
+  license:
+    name: 'https://www.morphosource.org/terms'
+    url: 'https://www.morphosource.org/terms'
+  termsOfService: 'https://www.morphosource.org/terms'
+servers:
+  - url: 'http://morphosource-dev.rc.duke.edu:3000'
+    description: JW Development VM
+paths:
+  '/api/media/{media-id}':
+    get:
+      summary: Get individual media record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains media metadata object
+                    properties:
+                      media:
+                        $ref: '#/components/schemas/Media'
+              examples: {}
+      operationId: get-api-media-id
+      description: |-
+        Returns metadata for a single media record. 
+
+        API key is not required for published media, but can be used to authenticate access to private media.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Media endpoints
+    parameters:
+      - schema:
+          type: string
+          minLength: 9
+          maxLength: 9
+          example: '000200043'
+        name: media-id
+        in: path
+        description: Unique media record ID. Should be a string of 9 numeric characters.
+        required: true
+  /api/media:
+    get:
+      summary: Search media records
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains media metadata object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+                      facets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Catalog-Facet'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+                      facets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                            label:
+                              type: string
+                      pages:
+                        type: object
+                        properties:
+                          current_page:
+                            type: integer
+                          next_page:
+                            type:
+                              - integer
+                              - 'null'
+                          prev_page:
+                            type:
+                              - integer
+                              - 'null'
+                          total_pages:
+                            type: integer
+                          limit_value:
+                            type: integer
+                          offset_value:
+                            type: integer
+                          total_count:
+                            type: integer
+                          first_page?:
+                            type: boolean
+                          last_page?:
+                            type: boolean
+          description: ''
+      operationId: get-api-media
+      description: |-
+        Searches for media records and returns metadata. 
+
+        API key is not required for published media, but can be used to authenticate access to private media.
+      parameters:
+        - schema:
+            type: string
+            example: all_fields
+          in: query
+          name: search_field
+          description: Must be "all_fields" to use search query
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: Search query
+      security:
+        - API-Key: []
+      tags:
+        - Media endpoints
+    parameters: []
+  '/api/physical-objects/{physical-object-id}':
+    get:
+      summary: Get individual physical object record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains physical object metadata object
+                    properties:
+                      biological_specimen || cultural_heritage_object:
+                        $ref: '#/components/schemas/Physical-Object'
+              examples: {}
+      operationId: get-api-physical-object-id
+      description: |-
+        Returns metadata for a single physical object (biological specimen or cultural heritage object) record.
+
+        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Physical object endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200025'
+        name: physical-object-id
+        in: path
+        required: true
+        description: Unique physical object record ID. Should be a string of 9 numeric characters.
+  /api/physical-objects:
+    get:
+      summary: Search physical object records
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains media metadata object
+                    properties:
+                      physical_objects:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Physical-Object'
+                      facets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Catalog-Facet'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+                      facets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                            label:
+                              type: string
+                      pages:
+                        type: object
+                        properties:
+                          current_page:
+                            type: integer
+                          next_page:
+                            type:
+                              - integer
+                              - 'null'
+                          prev_page:
+                            type:
+                              - integer
+                              - 'null'
+                          total_pages:
+                            type: integer
+                          limit_value:
+                            type: integer
+                          offset_value:
+                            type: integer
+                          total_count:
+                            type: integer
+                          first_page?:
+                            type: boolean
+                          last_page?:
+                            type: boolean
+          description: ''
+      operationId: get-api-physical-objects
+      description: |-
+        Searches for physical object (biological specimen or cultural heritage object) records and returns metadata. 
+
+        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+      parameters:
+        - schema:
+            type: string
+            example: all_fields
+          in: query
+          name: search_field
+          description: Must be "all_fields" to use search query
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: Search query
+      security:
+        - API-Key: []
+      tags:
+        - Physical object endpoints
+    parameters: []
+  '/api/organizations/{organization-id}':
+    get:
+      summary: Get individual organization record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains organization metadata object
+                    properties:
+                      organization:
+                        $ref: '#/components/schemas/Organization'
+              examples: {}
+      operationId: get-api-organization-id
+      description: |-
+        Returns metadata for a single organization (a museum, institutional, or departmental collection of physical objects) record.
+
+        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Organization endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200127'
+        name: organization-id
+        in: path
+        required: true
+        description: Unique organization record ID. Should be a string of 9 numeric characters.
+  /api/organizations:
+    get:
+      summary: Search organization records
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      organizations:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Organization'
+                      facets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Catalog-Facet'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+                      facets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                            label:
+                              type: string
+                      pages:
+                        type: object
+                        properties:
+                          current_page:
+                            type: integer
+                          next_page:
+                            type:
+                              - integer
+                              - 'null'
+                          prev_page:
+                            type:
+                              - integer
+                              - 'null'
+                          total_pages:
+                            type: integer
+                          limit_value:
+                            type: integer
+                          offset_value:
+                            type: integer
+                          total_count:
+                            type: integer
+                          first_page?:
+                            type: boolean
+                          last_page?:
+                            type: boolean
+          description: ''
+      operationId: get-api-organizations
+      description: |-
+        Searches for organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
+
+        It is possible to include an API key, but by default all organization records are public. Therefore, this is generally unnecessary.
+      parameters:
+        - schema:
+            type: string
+            example: all_fields
+          in: query
+          name: search_field
+          description: Must be "all_fields" to use search query
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: Search query
+      security:
+        - API-Key: []
+      tags:
+        - Organization endpoints
+    parameters: []
+  '/api/projects/{project-or-team-id}':
+    get:
+      summary: Get individual project or team record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains organization metadata object
+                    properties:
+                      collection:
+                        $ref: '#/components/schemas/Project-or-Team'
+              examples: {}
+      operationId: get-api-project-id
+      description: |-
+        Returns metadata for a single project or team record.
+
+        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  /api/projects:
+    get:
+      summary: Search project or team records
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      collections:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Project-or-Team'
+                      facets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Catalog-Facet'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples: {}
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+                      facets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            items:
+                              type: array
+                              items:
+                                type: object
+                            label:
+                              type: string
+                      pages:
+                        type: object
+                        properties:
+                          current_page:
+                            type: integer
+                          next_page:
+                            type:
+                              - integer
+                              - 'null'
+                          prev_page:
+                            type:
+                              - integer
+                              - 'null'
+                          total_pages:
+                            type: integer
+                          limit_value:
+                            type: integer
+                          offset_value:
+                            type: integer
+                          total_count:
+                            type: integer
+                          first_page?:
+                            type: boolean
+                          last_page?:
+                            type: boolean
+          description: ''
+      operationId: get-api-projects
+      description: |-
+        Searches for project or team records and returns metadata. 
+
+        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+      parameters:
+        - schema:
+            type: string
+            example: all_fields
+          in: query
+          name: search_field
+          description: Must be "all_fields" to use search query
+        - schema:
+            type: string
+          in: query
+          name: q
+          description: Search query
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+    parameters: []
+  '/api/projects/{project-or-team-id}/media':
+    get:
+      summary: Get media in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-media
+      description: |-
+        Returns metadata for media records in a project or team.
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{project-or-team-id}/biological-specimens':
+    get:
+      summary: Get biological specimens in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      objects:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Physical-Object'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-biological-specimens
+      description: |-
+        Returns metadata for biological specimen records in a project or team.
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{project-or-team-id}/cultural-heritage-objects':
+    get:
+      summary: Get cultural heritage objects in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      objects:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Physical-Object'
+                      facets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Catalog-Facet'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-cultural-heritage-objects
+      description: |-
+        Returns metadata for cultural heritage object records in a project or team.
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{project-or-team-id}/media-download-counts':
+    get:
+      summary: Get metadata and download counts of media in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    description: Contains organization metadata object
+                    properties:
+                      media_with_download_counts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: array
+                              items:
+                                type: string
+                            title:
+                              type: array
+                              items:
+                                type: string
+                            media:
+                              $ref: '#/components/schemas/Media'
+                            downloads:
+                              type: array
+                              items:
+                                type: string
+                            unique_download_users:
+                              type: array
+                              items:
+                                type: string
+                            unique_download_user_use_intent_counts:
+                              $ref: '#/components/schemas/Download-Use-Intent-Categories'
+                            unique_download_user_demographic_counts:
+                              $ref: '#/components/schemas/Download-User-Demographic-Categories'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-media-download-counts
+      description: |-
+        Returns numbers of downloads, download use intent and user demographics, and record metadata for media records in a project or team. This route returns media record metadata and summed counts of downloads, unique download users, and download use intent and download user demographics for each media record as a separate object. This can be compared with the `media-downloads` route, which returns each individual media download as its own separate object
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{project-or-team-id}/media-downloads':
+    get:
+      summary: Get downloads of media in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media_downloads:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media-Download'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-media-downloads
+      description: |-
+        Returns complete information for downloads of media in a project or team. This route returns each individual media download as its own separate object. This can be compared with the `media-download-counts` route, which returns media record metadata and summed counts of downloads, unique download users, and download use intent and download user demographics for each media record as a separate object.
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{project-or-team-id}/media-requests':
+    get:
+      summary: Get requests to download restricted media in project or team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media_requests:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Media-Request'
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-project-media-requests
+      description: |-
+        Returns complete information for all requests to download restricted media in project or team.
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: project-or-team-id
+        in: path
+        required: true
+        description: Unique project or team record ID. Should be a string of 9 numeric characters.
+  '/api/projects/{team-id}/view-only-media-projects':
+    get:
+      summary: Get projects containing media in a team but not owned by team
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      collections:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: array
+                              items:
+                                type: string
+                            title:
+                              type: array
+                              items:
+                                type: string
+                            collection:
+                              $ref: '#/components/schemas/Project-or-Team'
+                            url:
+                              type: array
+                              items:
+                                type: string
+                            managers:
+                              type: array
+                              items:
+                                type: string
+                            manager_emails:
+                              type: array
+                              items:
+                                type: string
+                            media_number:
+                              type: array
+                              items:
+                                type: number
+              examples: {}
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '403':
+          $ref: '#/components/responses/403-Not-Authorized'
+      operationId: get-api-team-view-only-media-projects
+      description: |-
+        Some media in a team may not be owned by that team. In other words, the team may only have view access to this media. This route returns a list of projects containing media within a team that the team does not own.
+
+        **This endpoint is only for teams - it has no functionality for projects.**
+
+        To use this endpoint, you must be a manager for the project or team and provide your API key.
+      parameters: []
+      security:
+        - API-Key: []
+      tags:
+        - Project or team endpoints
+        - Records in project or team endpoints
+    parameters:
+      - schema:
+          type: string
+          example: '000200022'
+        name: team-id
+        in: path
+        required: true
+        description: Unique team record ID. Should be a string of 9 numeric characters.
+components:
+  schemas:
+    Media:
+      title: Media
+      x-stoplight:
+        id: kmijtc5zxqytw
+      type: object
+      description: 'Record for 3D, 2D, or AV media representing a physical object. This model represents the results from a search or individual record query.'
+      properties:
+        id:
+          type: array
+          items:
+            type: string
+        title:
+          type: array
+          items:
+            type: string
+        media_type:
+          type: array
+          items:
+            type: string
+        modality:
+          type: array
+          items:
+            type: string
+        device:
+          type: array
+          items:
+            type: string
+        device_facility:
+          type: array
+          items:
+            type: string
+        media_parent_id:
+          type: array
+          items:
+            type: string
+        physical_object_id:
+          type: array
+          items:
+            type: string
+        physical_object_title:
+          type: array
+          items:
+            type: string
+        physical_object_organization:
+          type: array
+          items:
+            type: string
+        physical_object_type:
+          type: array
+          items:
+            type: string
+        physical_object_taxonomy:
+          type: array
+          items:
+            type: string
+        part:
+          type: array
+          items:
+            type: string
+        side:
+          type: array
+          items:
+            type: string
+        creator:
+          type: array
+          items:
+            type: string
+        short_description:
+          type: array
+          items:
+            type: string
+        description:
+          type: array
+          items:
+            type: string
+        ip_holder:
+          type: array
+          items:
+            type: string
+        copyright_statement:
+          type: array
+          items:
+            type: string
+        license:
+          type: array
+          items:
+            type: string
+        morphosource_use_agreement_type:
+          type: array
+          items:
+            type: string
+        permits_commercial_use:
+          type: array
+          items:
+            type: string
+        permits_3d_use:
+          type: array
+          items:
+            type: string
+        required_archival_of_published_derivatives:
+          type: array
+          items:
+            type: string
+        funding:
+          type: array
+          items:
+            type: string
+        publisher:
+          type: array
+          items:
+            type: string
+        cite_as:
+          type: array
+          items:
+            type: string
+        ark:
+          type: array
+          items:
+            type: string
+        doi:
+          type: array
+          items:
+            type: string
+        external_identifier:
+          type: array
+          items:
+            type: string
+        external_media_url:
+          type: array
+          items:
+            type: string
+        visibility:
+          type: array
+          items:
+            type: string
+        in_collections:
+          type: array
+          items:
+            type: string
+        date_uploaded:
+          type: array
+          items:
+            type: string
+        date_modified:
+          type: array
+          items:
+            type: string
+        legacy_media_group_id:
+          type: array
+          items:
+            type: string
+        legacy_media_file_id:
+          type: array
+          items:
+            type: string
+        x_pixel_spacing:
+          type: array
+          items:
+            type: string
+        y_pixel_spacing:
+          type: array
+          items:
+            type: string
+        z_pixel_spacing:
+          type: array
+          items:
+            type: string
+        slice_thickness:
+          type: array
+          items:
+            type: string
+        unit:
+          type: array
+          items:
+            type: string
+        number_of_images_in_set:
+          type: array
+          items:
+            type: string
+        data_manager:
+          type: array
+          items:
+            type: string
+        data_depositor:
+          type: array
+          items:
+            type: string
+    Physical-Object:
+      title: Physical Object
+      x-stoplight:
+        id: ssipdqxoka4hh
+      type: object
+      description: Record for a physical object. This can be either a biological specimen or a cultural heritage object. This model represents the results from a search or individual record query.
+      properties:
+        id:
+          type: array
+          items:
+            type: string
+        title:
+          type: array
+          items:
+            type: string
+        organization:
+          type: array
+          items:
+            type: string
+        institution_code:
+          type: array
+          items:
+            type: string
+        collection_code:
+          type: array
+          items:
+            type: string
+        catalog_number:
+          type: array
+          items:
+            type: string
+        occurrence_id:
+          type: array
+          items:
+            type: string
+        idigbio_uuid:
+          type: array
+          items:
+            type: string
+        idigbio_recordset_id:
+          type: array
+          items:
+            type: string
+        type:
+          type: array
+          items:
+            type: string
+        vouchered:
+          type: array
+          items:
+            type: string
+        taxonomy:
+          type: array
+          items:
+            type: string
+        sex:
+          type: array
+          items:
+            type: string
+        creator:
+          type: array
+          items:
+            type: string
+        date_uploaded:
+          type: array
+          items:
+            type: string
+        date_modified:
+          type: array
+          items:
+            type: string
+    Catalog-Pages-Information:
+      title: Catalog-Pages-Information
+      x-stoplight:
+        id: 5bepevvf72wt7
+      type: object
+      description: Catalog page information.
+      properties:
+        current_page:
+          type: integer
+        next_page:
+          type:
+            - integer
+            - 'null'
+        prev_page:
+          type:
+            - integer
+            - 'null'
+        total_pages:
+          type: integer
+        limit_value:
+          type: integer
+        offset_value:
+          type: integer
+        total_count:
+          type: integer
+        first_page?:
+          type: boolean
+        last_page?:
+          type: boolean
+    Catalog-Facet:
+      title: Catalog-Facet
+      x-stoplight:
+        id: ka047vayvajzs
+      type: object
+      description: Single catalog search facet with one or more facet items.
+      properties:
+        name:
+          type: string
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              value:
+                type: string
+              hits:
+                type: integer
+              label:
+                type: string
+        label:
+          type: string
+    Organization:
+      title: Organization
+      x-stoplight:
+        id: 7vuwymxw6yg1n
+      type: object
+      description: 'Record for an organization (a museum, institutional, or departmental collection of physical objects). This model represents the results from a search or individual record query.'
+      properties:
+        id:
+          type: array
+          items:
+            type: string
+        title:
+          type: array
+          items:
+            type: string
+        date_uploaded:
+          type: array
+          items:
+            type: string
+        date_modified:
+          type: array
+          items:
+            type: string
+    Project-or-Team:
+      title: Project or Team
+      x-stoplight:
+        id: 7vuwymxw6yg1n
+      type: object
+      description: Record for a project or team. This model represents the results from a search or individual record query.
+      properties:
+        id:
+          type: array
+          items:
+            type: string
+        project_or_team:
+          type: array
+          items:
+            type: string
+        title:
+          type: array
+          items:
+            type: string
+        linked_organization:
+          type: array
+          items:
+            type: string
+        description:
+          type: array
+          items:
+            type: string
+        creator:
+          type: array
+          items:
+            type: string
+        contributor:
+          type: array
+          items:
+            type: string
+        location:
+          type: array
+          items:
+            type: string
+        related_url:
+          type: array
+          items:
+            type: string
+        visibility:
+          type: array
+          items:
+            type: string
+        date_uploaded:
+          type: array
+          items:
+            type: string
+        date_modified:
+          type: array
+          items:
+            type: string
+    Download-Use-Intent-Categories:
+      title: Download-Use-Intent-Categories
+      x-stoplight:
+        id: rk8x9ghzwsp1h
+      description: Categories of use intents for media that are tracked per download.
+      type: object
+      properties:
+        Completing Class Assignment(s) (Grades K-6):
+          type: number
+        Completing Class Assignment(s) (Grades 7-12):
+          type: number
+        Completing Class Assignment(s) (University or Post-Secondary):
+          type: number
+        Completing Class Assignment(s) (Post-Graduate):
+          type: number
+        Educator Resource (Grades K-6):
+          type: number
+        Educator Resource (Grades 7-12):
+          type: number
+        Educator Resource (University or Post-Secondary):
+          type: number
+        Educator Resource (Post-Graduate):
+          type: number
+        'Public Outreach (Museums, Documentaries, Etc)':
+          type: number
+        Research:
+          type: number
+        Art:
+          type: number
+        Personal Interest:
+          type: number
+        3D Printing:
+          type: number
+        Commercial Use:
+          type: number
+    Download-User-Demographic-Categories:
+      title: Download User Demographic Categories
+      x-stoplight:
+        id: cwuhtd7e24ony
+      type: object
+      description: Categories of user demographics that are recorded for each user for each download.
+      properties:
+        Student (Grades K-6):
+          type: number
+        Student (Grades 7-12):
+          type: number
+        Student (University or Post-Secondary):
+          type: number
+        Student (Post-Graduate):
+          type: number
+        Faculty (Grades K-6):
+          type: number
+        Faculty (Grades K-7):
+          type: number
+        Faculty (University or Post-Secondary):
+          type: number
+        Faculty (Post-Graduate):
+          type: number
+        University Staff:
+          type: number
+        General Educator:
+          type: number
+        Museum Curator or Collections Manager:
+          type: number
+        Museum Staff:
+          type: number
+        Librarian:
+          type: number
+        IT Professional:
+          type: number
+        Private Individual:
+          type: number
+        Researcher:
+          type: number
+        Private Industry Professional:
+          type: number
+        Artist:
+          type: number
+        Government Employee:
+          type: number
+    Media-Download:
+      title: Media-Download
+      x-stoplight:
+        id: oytkqzfaeg63i
+      type: object
+      description: An individual download of a media record.
+      properties:
+        media_id:
+          type: array
+          items:
+            type: string
+        date_downloaded:
+          type: array
+          items:
+            type: string
+        download_user:
+          type: array
+          items:
+            type: string
+        download_usage:
+          type: array
+          items:
+            type: string
+        download_usage_list:
+          type: array
+          items:
+            type: string
+        download_user_id:
+          type: array
+          items:
+            type: string
+    Media-Request:
+      title: Media-Request
+      x-stoplight:
+        id: 33thd3qbrizo9
+      type: object
+      description: An individual request to download media that is published with restricted download.
+      properties:
+        media_id:
+          type: array
+          items:
+            type: string
+        date_downloaded:
+          type: array
+          items:
+            type: string
+        date_requested:
+          type: array
+          items:
+            type: string
+        date_approved:
+          type: array
+          items:
+            type: string
+        date_denied:
+          type: array
+          items:
+            type: string
+        date_canceled:
+          type: array
+          items:
+            type: string
+        date_expired:
+          type: array
+          items:
+            type: string
+        use:
+          type: array
+          items:
+            type: string
+        date_cleared:
+          type: array
+          items:
+            type: string
+        download_user:
+          type: array
+          items:
+            type: string
+        decision_user:
+          type: array
+          items:
+            type: string
+        current_reviewers:
+          type: array
+          items:
+            type: string
+        download_user_id:
+          type: array
+          items:
+            type: string
+  securitySchemes:
+    API-Key:
+      name: Authorization
+      type: apiKey
+      in: header
+      description: ''
+  responses:
+    401-Authentication-Required:
+      description: Standard response for authentication required.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                default: 401
+              message:
+                type: string
+                default: Authentication Required
+              description:
+                type: string
+                default: You must be logged in to do that!
+    403-Not-Authorized:
+      description: Standard response for not authorized.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                default: 403
+              message:
+                type: string
+                default: Not Authorized
+              description:
+                type: string
+                default: You are not authorized to access this content.
