@@ -10,12 +10,12 @@ info:
     url: 'https://www.morphosource.org'
     email: julie.winchester@duke.edu
   license:
-    name: 'https://www.morphosource.org/terms'
-    url: 'https://www.morphosource.org/terms'
+    name: CC BY-NC 4.0
+    url: 'https://creativecommons.org/licenses/by-nc/4.0/'
   termsOfService: 'https://www.morphosource.org/terms'
 servers:
-  - url: 'http://morphosource-dev.rc.duke.edu:3000'
-    description: JW Development VM
+  - url: 'https://www.morphosource.org'
+    description: MorphoSource
 paths:
   '/api/media/{media-id}':
     get:
