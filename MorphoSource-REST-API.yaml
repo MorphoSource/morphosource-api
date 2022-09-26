@@ -3,7 +3,7 @@ x-stoplight:
   id: rm6bqdolcidct
 info:
   title: MorphoSource REST API
-  version: 0.1.0
+  version: 0.1.1
   summary: MorphoSource REST API to retrieve metadata for repository records
   contact:
     name: Julie Winchester
