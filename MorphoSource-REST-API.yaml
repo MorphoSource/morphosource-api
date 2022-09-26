@@ -81,58 +81,6 @@ paths:
                       pages:
                         $ref: '#/components/schemas/Catalog-Pages-Information'
               examples: {}
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  response:
-                    type: object
-                    properties:
-                      media:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Media'
-                      facets:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            items:
-                              type: array
-                              items:
-                                type: object
-                            label:
-                              type: string
-                      pages:
-                        type: object
-                        properties:
-                          current_page:
-                            type: integer
-                          next_page:
-                            type:
-                              - integer
-                              - 'null'
-                          prev_page:
-                            type:
-                              - integer
-                              - 'null'
-                          total_pages:
-                            type: integer
-                          limit_value:
-                            type: integer
-                          offset_value:
-                            type: integer
-                          total_count:
-                            type: integer
-                          first_page?:
-                            type: boolean
-                          last_page?:
-                            type: boolean
-          description: ''
       operationId: get-api-media
       description: |-
         Searches for media records and returns metadata. 
@@ -217,58 +165,6 @@ paths:
                       pages:
                         $ref: '#/components/schemas/Catalog-Pages-Information'
               examples: {}
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  response:
-                    type: object
-                    properties:
-                      media:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Media'
-                      facets:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            items:
-                              type: array
-                              items:
-                                type: object
-                            label:
-                              type: string
-                      pages:
-                        type: object
-                        properties:
-                          current_page:
-                            type: integer
-                          next_page:
-                            type:
-                              - integer
-                              - 'null'
-                          prev_page:
-                            type:
-                              - integer
-                              - 'null'
-                          total_pages:
-                            type: integer
-                          limit_value:
-                            type: integer
-                          offset_value:
-                            type: integer
-                          total_count:
-                            type: integer
-                          first_page?:
-                            type: boolean
-                          last_page?:
-                            type: boolean
-          description: ''
       operationId: get-api-physical-objects
       description: |-
         Searches for physical object (biological specimen or cultural heritage object) records and returns metadata. 
@@ -352,58 +248,6 @@ paths:
                       pages:
                         $ref: '#/components/schemas/Catalog-Pages-Information'
               examples: {}
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  response:
-                    type: object
-                    properties:
-                      media:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Media'
-                      facets:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            items:
-                              type: array
-                              items:
-                                type: object
-                            label:
-                              type: string
-                      pages:
-                        type: object
-                        properties:
-                          current_page:
-                            type: integer
-                          next_page:
-                            type:
-                              - integer
-                              - 'null'
-                          prev_page:
-                            type:
-                              - integer
-                              - 'null'
-                          total_pages:
-                            type: integer
-                          limit_value:
-                            type: integer
-                          offset_value:
-                            type: integer
-                          total_count:
-                            type: integer
-                          first_page?:
-                            type: boolean
-                          last_page?:
-                            type: boolean
-          description: ''
       operationId: get-api-organizations
       description: |-
         Searches for organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
@@ -487,58 +331,6 @@ paths:
                       pages:
                         $ref: '#/components/schemas/Catalog-Pages-Information'
               examples: {}
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  response:
-                    type: object
-                    properties:
-                      media:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Media'
-                      facets:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            name:
-                              type: string
-                            items:
-                              type: array
-                              items:
-                                type: object
-                            label:
-                              type: string
-                      pages:
-                        type: object
-                        properties:
-                          current_page:
-                            type: integer
-                          next_page:
-                            type:
-                              - integer
-                              - 'null'
-                          prev_page:
-                            type:
-                              - integer
-                              - 'null'
-                          total_pages:
-                            type: integer
-                          limit_value:
-                            type: integer
-                          offset_value:
-                            type: integer
-                          total_count:
-                            type: integer
-                          first_page?:
-                            type: boolean
-                          last_page?:
-                            type: boolean
-          description: ''
       operationId: get-api-projects
       description: |-
         Searches for project or team records and returns metadata. 
