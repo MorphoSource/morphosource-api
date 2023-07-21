@@ -525,9 +525,9 @@ paths:
                               items:
                                 type: string
                             unique_download_user_use_intent_counts:
-                              $ref: '#/components/schemas/Download-Use-Intent-Categories'
+                              $ref: '#/components/schemas/Download-Use-Intent-Category-Counts'
                             unique_download_user_demographic_counts:
-                              $ref: '#/components/schemas/Download-User-Demographic-Categories'
+                              $ref: '#/components/schemas/Download-User-Demographic-Category-Counts'
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
@@ -1096,8 +1096,8 @@ components:
           type: array
           items:
             type: string
-    Download-Use-Intent-Categories:
-      title: Download-Use-Intent-Categories
+    Download-Use-Intent-Category-Counts:
+      title: Download Use Intent Category Counts
       x-stoplight:
         id: rk8x9ghzwsp1h
       description: Categories of use intents for media that are tracked per download.
@@ -1131,8 +1131,8 @@ components:
           type: number
         Commercial Use:
           type: number
-    Download-User-Demographic-Categories:
-      title: Download User Demographic Categories
+    Download-User-Demographic-Category-Counts:
+      title: Download User Demographic Category Counts
       x-stoplight:
         id: cwuhtd7e24ony
       type: object
@@ -1266,6 +1266,16 @@ components:
           type: array
           items:
             type: string
+    Download-Use-Intent-Categories:
+      title: Download-Use-Intent-Categories
+      x-stoplight:
+        id: 5vcwroqfq9g5w
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: jkexnp0lzq9vf
   securitySchemes:
     API-Key:
       name: Authorization
@@ -1305,3 +1315,23 @@ components:
               description:
                 type: string
                 default: You are not authorized to access this content.
+  requestBodies:
+    Download-Request:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              use_statement:
+                type: string
+                x-stoplight:
+                  id: k7kfdxd8q5ptl
+              use_categories:
+                type: array
+                x-stoplight:
+                  id: hpup9umlo1yv4
+                minItems: 1
+                items: {}
+            required:
+              - use_statement
+      description: Other params to be specified as part of a download request include media_id (provided in the URL as a param) and the API key (provided as an "Authorization" header).
