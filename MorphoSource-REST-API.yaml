@@ -1270,12 +1270,20 @@ components:
       title: Download-Use-Intent-Categories
       x-stoplight:
         id: 5vcwroqfq9g5w
-      type: object
-      properties:
-        id:
-          type: string
-          x-stoplight:
-            id: jkexnp0lzq9vf
+      enum:
+        - Completing Class Assignment(s) (Grades K-6)
+        - Completing Class Assignment(s) (Grades 7-12)
+        - Completing Class Assignment(s) (University or Post-Secondary)
+        - Completing Class Assignment(s) (Post-Graduate)
+        - Educator Resource (Grades K-6)
+        - Educator Resource (Grades 7-12)
+        - Educator Resource (University or Post-Secondary)
+        - Educator Resource (Post-Graduate)
+        - Research
+        - Art
+        - Personal Interest
+        - 3D Printing
+        - Commercial Use
   securitySchemes:
     API-Key:
       name: Authorization
@@ -1326,12 +1334,30 @@ components:
                 type: string
                 x-stoplight:
                   id: k7kfdxd8q5ptl
+                minLength: 50
               use_categories:
                 type: array
                 x-stoplight:
                   id: hpup9umlo1yv4
-                minItems: 1
-                items: {}
+                uniqueItems: true
+                items:
+                  $ref: '#/components/schemas/Download-Use-Intent-Categories'
+                  x-stoplight:
+                    id: d0ssqbfoipi4g
+              use_category_other:
+                type: string
+                x-stoplight:
+                  id: a9wbwhgw2qodk
+              agreements_accepted:
+                type: boolean
+                x-stoplight:
+                  id: in26gthd215ud
             required:
               - use_statement
-      description: Other params to be specified as part of a download request include media_id (provided in the URL as a param) and the API key (provided as an "Authorization" header).
+              - agreements_accepted
+      description: |-
+        - Other params to be specified as part of a download request include media_id (provided in the URL as a param) and the API key (provided as an "Authorization" header).
+
+        - Value must be provided for EITHER use_categories OR use_category_other. For use_categories value, array values need to match Download-Use-Intent-Categories enum and at least one array value must be present.
+
+        - As specified below in the schema, use_statement string value should be >= 50 characters.  
