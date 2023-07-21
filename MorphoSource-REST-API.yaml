@@ -715,7 +715,7 @@ paths:
         in: path
         required: true
     post:
-      summary: ''
+      summary: Download Media File
       operationId: post-api-download-media-id
       responses:
         '200':
