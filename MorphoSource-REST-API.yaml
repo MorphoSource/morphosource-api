@@ -1446,6 +1446,7 @@ components:
                 x-stoplight:
                   id: k7kfdxd8q5ptl
                 minLength: 50
+                example: I will use this data to complete a class assignment on primate anatomy.
               use_categories:
                 type: array
                 x-stoplight:
@@ -1459,6 +1460,7 @@ components:
                 type: string
                 x-stoplight:
                   id: a9wbwhgw2qodk
+                example: Studying for qualifying exams
               agreements_accepted:
                 type: boolean
                 x-stoplight:
@@ -1467,8 +1469,6 @@ components:
               - use_statement
               - agreements_accepted
       description: |-
-        - Other params to be specified as part of a download request include media_id (provided in the URL as a param) and the API key (provided as an "Authorization" header).
-
         - Value must be provided for EITHER use_categories OR use_category_other. For use_categories value, array values need to match Download-Use-Intent-Categories enum and at least one array value must be present.
 
         - As specified below in the schema, use_statement string value should be >= 50 characters.  
