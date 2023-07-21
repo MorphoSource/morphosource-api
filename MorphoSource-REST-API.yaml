@@ -766,6 +766,8 @@ paths:
         - API-Key: []
       description: |
         Retrieve a media file binary download URL. This endpoint can be used to achieve media file downloads via API. API key must always be included. The request body includes required download usage information to allow MorphoSource to track media impact and reuse. If the request is successful, the API response will include a direct download URL that can be used to download the media file binary. Note: the response download URL identifies the requesting user specifically, and is only to be used by the requesting user.
+      tags:
+        - Media endpoints
 components:
   schemas:
     Media:
