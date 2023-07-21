@@ -707,6 +707,65 @@ paths:
         in: path
         required: true
         description: Unique team record ID. Should be a string of 9 numeric characters.
+  '/api/download/{media-id}':
+    parameters:
+      - schema:
+          type: string
+        name: media-id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-api-download-media-id
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    x-stoplight:
+                      id: 4ll5cxxqb2feb
+                    properties:
+                      media:
+                        type: object
+                        x-stoplight:
+                          id: s4qe8mx5nyu88
+                        properties:
+                          id:
+                            type: array
+                            x-stoplight:
+                              id: jetmccfenbrak
+                            items:
+                              x-stoplight:
+                                id: shx8h1mrcm372
+                              type: string
+                          download_url:
+                            type: array
+                            x-stoplight:
+                              id: 5xxewa82c5ja5
+                            items:
+                              x-stoplight:
+                                id: nweu6wk70e3th
+                              type: string
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
+      x-stoplight:
+        id: stzmm22vruz2k
+      requestBody:
+        $ref: '#/components/requestBodies/Download-Request'
+      security:
+        - API-Key: []
+      description: |
+        Retrieve a media file binary download URL. This endpoint can be used to achieve media file downloads via API. API key must always be included. The request body includes required download usage information to allow MorphoSource to track media impact and reuse. If the request is successful, the API response will include a direct download URL that can be used to download the media file binary. Note: the response download URL identifies the requesting user specifically, and is only to be used by the requesting user.
 components:
   schemas:
     Media:
@@ -1308,7 +1367,7 @@ components:
                 type: string
                 default: You must be logged in to do that!
     403-Not-Authorized:
-      description: Standard response for not authorized.
+      description: 'Standard response for not authorized. As of 2023, this response is deprecated. Endpoints will eventually return 404 status code and responses instead.'
       content:
         application/json:
           schema:
@@ -1323,6 +1382,58 @@ components:
               description:
                 type: string
                 default: You are not authorized to access this content.
+    404-Not-Found:
+      description: 'Standard response for a resource not found, unavailable, or inaccessible by the current user.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                x-stoplight:
+                  id: 4bq9e7t4z4y5w
+                default: 404
+              message:
+                type: string
+                x-stoplight:
+                  id: 554cuhmglohbv
+                default: Not Found
+              description:
+                type: string
+                x-stoplight:
+                  id: l2f5aqd71glfi
+                default: Resource not found or unavailable.
+    400-Bad-Request:
+      description: 'Standard response for client error, most commonly because of malformed request syntax. Will include an array of specific errors encountered.'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                x-stoplight:
+                  id: ciqbvoy6usd60
+                default: 400
+              message:
+                type: string
+                x-stoplight:
+                  id: ks48ly4gsw94g
+                default: Bad Request
+              description:
+                type: string
+                x-stoplight:
+                  id: 7639ca587iqc2
+                default: Cannot or will not process request due to perceived client error in request.
+              errors:
+                type: array
+                x-stoplight:
+                  id: k4qj0zknhzku0
+                items:
+                  x-stoplight:
+                    id: 6gvdm5f2ksjwe
+                  type: string
   requestBodies:
     Download-Request:
       content:
