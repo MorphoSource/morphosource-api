@@ -764,7 +764,7 @@ paths:
         $ref: '#/components/requestBodies/Download-Request'
       security:
         - API-Key: []
-      description: |
+      description: |-
         Retrieves a file download URL for a single media if the user is authorized to download requested media. This endpoint can be used to achieve media file downloads using the API. Please note: this endpoint is significantly different from other routes provided by the API, so please read the description carefully.
 
         To use this endpoint, users must identify themselves and provide information relating to how downloaded media will be used. The following information must be supplied:
