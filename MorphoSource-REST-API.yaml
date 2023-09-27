@@ -3,7 +3,7 @@ x-stoplight:
   id: rm6bqdolcidct
 info:
   title: MorphoSource REST API
-  version: 0.2.1
+  version: 0.3.0
   summary: MorphoSource REST API to retrieve metadata for repository records
   contact:
     name: Julie Winchester
@@ -765,7 +765,17 @@ paths:
       security:
         - API-Key: []
       description: |
-        Retrieve a media file binary download URL. This endpoint can be used to achieve media file downloads via API. API key must always be included. The request body includes required download usage information to allow MorphoSource to track media impact and reuse. If the request is successful, the API response will include a direct download URL that can be used to download the media file binary. Note: the response download URL identifies the requesting user specifically, and is only to be used by the requesting user.
+        Retrieves a file download URL for a single media if the user is authorized to download requested media. This endpoint can be used to achieve media file downloads using the API. Please note: this endpoint is significantly different from other routes provided by the API, so please read the description carefully.
+
+        To use this endpoint, users must identify themselves and provide information relating to how downloaded media will be used. The following information must be supplied:
+        - The media ID the user wants to download, provided as a URL path parameter.
+        - The API key linked to the downloading user's MorphoSource account, provided as an authorization header.
+        - A download use statement providing a free-text description of use intent at least 50 characters in length.
+        - A response to a use category survey, in which the user indicates one or more specific use categories that describe the download use intent. Only certain approved use categories are allowed, see *Body* below for allowed values.
+
+        Optionally, if the use category survey allowed values do not suitably describe a user's download intent, the user can also provide a free-text `use_category_other` that permits custom use categories to be described. However, they must still choose at least one standard `use_category` value.  
+
+        If the request is successful, the response will include a direct download URL that can be used to download the media file. This download URL identifies the requesting user specifically and is only to be used by the requesting user.
       tags:
         - Media endpoints
 components:
