@@ -2,7 +2,7 @@
 
 [MorphoSource](https://www.morphosource.org) is a publicly accessible 3D data repository  that enables museums, researchers, and scholars to upload, curate, and share 3D and 2D media representing physical objects of scholarly importance that can be found, viewed, and downloaded by other subject experts, educators, and the public. The MorphoSource REST API allows users to query and search repository records, including Media, Physical Objects, Organizations, and media collections like Projects and Teams. Users can also use the API to download MorphoSource media. Users who manage projects and teams can use the API to retrieve usage information for media in their media collections, including numbers of downloads, download requests, and other usage statistics. 
 
-The API is described with intuitive human-readable documentation powered by Stoplight. This documentation includes example requests and responses which can be very helpful when getting started with the API. We also make available an [OpenAPI 3 Schema specification document](https://github.com/MorphoSource/morphosource-api) that expresses and describes the API in ways that machines can interpret.  
+The API is described with intuitive human-readable [documentation](https://morphosource.stoplight.io/docs/morphosource-api/rm6bqdolcidct-morpho-source-rest-api) powered by Stoplight. This documentation includes example requests and responses which can be very helpful when getting started with the API. We also make available an [OpenAPI 3 Schema specification document](https://github.com/MorphoSource/morphosource-api) that expresses and describes the API in ways that machines can interpret.  
 
 ## Endpoints
 
