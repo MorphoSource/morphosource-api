@@ -774,7 +774,17 @@ paths:
         - A response to a use category survey, in which the user indicates one or more specific use categories that describe the download use intent. Only certain approved use categories are allowed, see **Body** section below for allowed values. Alternately, if the use category survey allowed values do not suitably describe a user's download intent, the user can instead provide a free-text `use_category_other` that permits custom use categories to be described. One of either `use_category` or `use_category_other` must be supplied, however.  
         - User should indicate with a boolean value (`true`) that they agree to all relevant terms for download use and reuse as specified by MorphoSource and the data contributor who uploaded the media. See the particular media page on MorphoSource or query media metadata via API in order to learn more about what use restriction terms, licenses, and agreements may apply.
 
-        If the request is successful, the response will include a direct download URL that can be used to download the media file. This download URL identifies the requesting user specifically and is only to be used by the requesting user.  **Response Example** to the right demonstrates a response from a successful request.
+        If the request is successful, the response will include a direct download URL that can be used to download the media file. **Response Example** to the right demonstrates a response from a successful request. 
+
+        Requests made to the direct download URL must still include the user's API key. The direct download URL identifies the requesting user specifically and is only to be used by the requesting user. See below for an example CURL usage to download a file from a direct download URL to a file name suggested by the API: 
+
+        ```
+        curl \
+          --url "$DOWNLOAD_URL" \
+          --header 'Authorization: $API_KEY' \
+          --remote-name \
+          --remote-header-name 
+        ```
       tags:
         - Media endpoints
 components:
