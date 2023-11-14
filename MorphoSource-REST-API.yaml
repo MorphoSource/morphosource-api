@@ -89,13 +89,16 @@ paths:
                       media:
                         $ref: '#/components/schemas/Media'
               examples: {}
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-media-id
       description: |-
         Returns metadata for a single media record. 
 
-        API key is not required for published media, but can be used to authenticate access to private media.
+        API key is optional. Querying published media does not require an API key. An API key can be used to query private media the user has specific access to view. If this route is used to query a media that does not exist, a media that is private and the request does not supply an API key, or a media that is private and an API key is supplied but the user does not have access to view the media, then a 404 Not Found response will be returned.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Media endpoints
@@ -137,21 +140,131 @@ paths:
               examples: {}
       operationId: get-api-media
       description: |-
-        Searches for media records and returns metadata. 
+        Searches for multiple Media records and returns metadata. A free text search query parameter is used to search across many different Media record fields. Results will be returned in paged format, with default results being returned for the first page of up to 1,000 results. Results can be filtered through the use of filter facets, which should always be supplied as query parameters in the form "f.<field_name>". See below for the list of applicable filter facet fields. This route provides equivalent functionality to the MorphoSource Media Search page (https://www.morphosource.org/catalog/media), the use of query parameters is very similar between that page and this endpoint. Experimenting with the features of the Media Search page may be instructive for use of this endpoint.
 
-        API key is not required for published media, but can be used to authenticate access to private media.
+        API key is optional. Searching published media does not require an API key. An API key can be used to search private media the user has specific access to view.
       parameters:
-        - schema:
-            type: string
-            example: all_fields
-          in: query
-          name: search_field
-          description: Must be "all_fields" to use search query
         - schema:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Media matching filter facet options will be shown. Omitting query and filter information can be used to query all Media the user has access to view'
+        - schema:
+            type: integer
+            default: 1
+            format: int32
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            default: 10
+            maximum: 1000
+            minimum: 1
+            format: int32
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+            example: CT Image Series
+          in: query
+          name: f.media_type
+          description: Media Type
+        - schema:
+            type: string
+            example: MicroNanoXRayComputedTomography
+          in: query
+          name: f.modality
+          description: Modality
+        - schema:
+            type: string
+            example: Biological Specimen
+          in: query
+          name: f.object_type
+          description: Object Type
+        - schema:
+            type: string
+            example: Museum of Biological Specimens Collection of Vertebrates
+          in: query
+          name: f.organization
+          description: Organization
+        - schema:
+            type: string
+            example: University of Education Facility for Scanning Things
+          in: query
+          name: f.imaging_facility
+          description: Imaging Facility
+        - schema:
+            type: string
+            example: Open Download
+          in: query
+          name: f.publication_status
+          description: Publication Status
+        - schema:
+            type: string
+            example: 'http://rightsstatements.org/vocab/InC/1.0/'
+          in: query
+          name: f.rights_statement
+          description: Rights Statement
+        - schema:
+            type: string
+            example: 'https://creativecommons.org/licenses/by-nc/4.0/'
+          in: query
+          name: f.license
+          description: CC License
+        - schema:
+            type: string
+            example: Puma concolor
+          in: query
+          name: f.taxonomy_name
+          description: Taxonomy (Name)
+        - schema:
+            type: string
+            example: Felidae
+          in: query
+          name: f.taxonomy_gbif
+          description: Taxonomy (GBIF)
+        - schema:
+            type: string
+          in: query
+          name: f.tag
+          description: Tag
+        - schema:
+            type: string
+          in: query
+          name: f.team
+          description: Team Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.project
+          description: Project Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.media_list
+          description: Media List Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.seq_section_list
+          description: Sequential Section List Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.owner
+          description: Data Manager
+        - schema:
+            type: string
+          in: query
+          name: f.depositor
+          description: Data Uploader
+        - schema:
+            type: string
+          in: query
+          name: f.sponsor
+          description: Data Sponsor
       security:
         - API-Key: []
       tags:
