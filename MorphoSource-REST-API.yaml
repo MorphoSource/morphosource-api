@@ -851,96 +851,184 @@ components:
       properties:
         id:
           type: array
+          description: "\t\nMorphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.).\nhttps://www.morphosource.org/terms/ms/ID"
           items:
             type: string
+            example: '000123456'
         title:
           type: array
+          description: |-
+            A name given to the resource.
+            http://purl.org/dc/terms/title
           items:
             type: string
+            example: 'Skull cranium [Mesh] [Photogrammetry]'
         media_type:
           type: array
+          description: "Type, nature, or classification of a Media file dataset, which may include one or more specific files. This is the general or high-level type of all file data, it is not the file type of any specific file. Most Media Types encompass a variety of different specific file types. Values must be from the Media Type controlled vocabulary (https://www.morphosource.org/terms/mscv/MediaType).\n\thttp://www.morphosource.org/terms/ms/mediaType"
           items:
             type: string
+            example: Mesh
         modality:
           type: array
+          description: |-
+            The imaging modality used in the imaging event. Value must be from Image Modality controlled vocabulary (https://www.morphosource.org/terms/mscv/ImageModalityType).
+            http://www.morphosource.org/terms/ms/ieModality
           items:
             type: string
+            example: Photogrammetry
         device:
           type: array
+          description: |-
+            Manufacturer and model names of device used to image physical object to create media.
+
+            Device record class: https://www.morphosource.org/terms/ms/Device
           items:
             type: string
+            example: CameraCorp Camera D8500
         device_facility:
           type: array
+          description: |-
+            Institution and organization name for imaging facility that imaged physical object to create Media.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
+            example: University of Education Imaging Facility for Scanning Things
         media_parent_id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.). Specifically, the ID for the Media with a parental hierarchical relationship to this Media.
+            https://www.morphosource.org/terms/ms/ID
           items:
             type: string
         physical_object_id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.). Specifically, the ID for the record of the physical object that this Media represents.
+            https://www.morphosource.org/terms/ms/ID
           items:
             type: string
         physical_object_title:
           type: array
+          description: |-
+            For biological specimens, the combined institution code, collection code, and catalog number separated by colons as a Darwin Core triplet. For a cultural heritage object, this is either the Darwin Core triplet or a short object tile. 
+            http://purl.org/dc/terms/title
           items:
             type: string
         physical_object_organization:
           type: array
+          description: |-
+            Organization name of the organization that manages the physical object from which the Media was imaged.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
         physical_object_type:
           type: array
+          description: 'Type of the Object, typically "Biological Specimen" or "Cultural Heritage Object".'
           items:
             type: string
-        physical_object_taxonomy:
+        physical_object_taxonomy_name:
           type: array
+          description: 'Binomial taxonomic name, in most cases a combination of genus and species names. For objects identified only with higher order taxonomy, this may take the form of a higher order name followed by "indet."'
           items:
             type: string
+            x-stoplight:
+              id: uafr8zm9zx65k
+        physical_object_taxonomy_gbif:
+          type: array
+          description: 'List of taxonomic names associated with this physical object through a GBIF aggregated taxonomy, if one is available.'
+          items:
+            type: string
+            x-stoplight:
+              id: 0u6pb2oe3r8od
         part:
           type: array
+          description: |-
+            The portion or product of organism morphology, behaviour, environment, etc. that is either predominantly shown or particularly well exemplified by the media resource, denoted by an IRI.
+            http://rs.tdwg.org/ac/terms/subjectPart
           items:
             type: string
         side:
           type: array
+          description: |-
+            The side of a larger object on which is located a represented component part, if media represents a component part of a larger whole object. Values must be from the Side controlled vocabulary (http://www.morphosource.org/terms/ms/Side). Values are somewhat oriented toward objects with bilateral symmetry, but may in some cases be applied for objects with other kinds of symmetry.
+            https://www.morphosource.org/terms/ms/side
           items:
             type: string
+            example: Midline
         creator:
           type: array
+          description: |-
+            Examples of a Creator include a person, an organization, or a service. Typically, the name of a Creator should be used to indicate the entity.
+
+            An entity primarily responsible for making the resource.
+            http://purl.org/dc/elements/1.1/creator
           items:
             type: string
         short_description:
           type: array
+          description: |-
+            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
+            https://www.morphosource.org/terms/ms/shortDescription
           items:
             type: string
         description:
           type: array
+          description: |-
+            Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
+
+            An account of the resource.
+            http://purl.org/dc/elements/1.1/description
           items:
             type: string
         ip_holder:
           type: array
+          description: |-
+            List of holders of intellectual property rights (copyright or license-based) for the Media.
+            https://www.morphosource.org/terms/ms/rightsHolder
           items:
             type: string
         copyright_statement:
           type: array
+          description: |-
+            Standardized rights statement used to communicate the copyright and/or reuse status of digital objects. Values must be from the Rights Statement controlled vocabulary (https://rightsstatements.org).
+            https://www.morphosource.org/terms/ms/rightsStatement
           items:
             type: string
         license:
           type: array
+          description: |-
+            Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided.
+
+            A legal document giving official permission to do something with the resource.
+            http://purl.org/dc/terms/license
           items:
             type: string
         morphosource_use_agreement_type:
           type: array
+          description: |-
+            Type of MorphoSource use agreement that users must agree to in order to download Media and that is packaged with an associated Media download. Values must be from the Use Agreement Type controlled vocabulary (http://www.morphosource.org/terms/mscv/UseAgreementType).
+            https://www.morphosource.org/terms/ms/morphosourceUseAgreementType
           items:
             type: string
         permits_commercial_use:
           type: array
+          description: |
+            Whether commercial use of Media is permitted. Values must be from the Commercial Use Permission controlled vocabulary (http://www.morphosource.org/terms/mscv/CommercialUsePermission).
+            https://www.morphosource.org/terms/ms/permitsCommercialUse
           items:
             type: string
+            example: CommercialUseNotPermitted
         permits_3d_use:
           type: array
+          description: |-
+            Whether Media may be 3D printed freely, may be 3D printed in limited ways, or if 3D printing is prohibited. Values must be from the 3D Printing Permission controlled vocabulary (http://www.morphosource.org/terms/mscv/3DPrintingPermission).
+            https://www.morphosource.org/terms/ms/permits3DUse
           items:
             type: string
+            example: 3DPrintingLimited
         required_archival_of_published_derivatives:
           type: array
           items:
