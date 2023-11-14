@@ -847,7 +847,7 @@ components:
       x-stoplight:
         id: kmijtc5zxqytw
       type: object
-      description: 'Record for 3D, 2D, or AV media representing a physical object. This model represents the results from a search or individual record query.'
+      description: 'Record for 3D, 2D, or AV media representing a physical object. This model represents the results from a search or individual record query. Some fields may only be relevant to particular media types and/or modalities, and will not pertain to all Media records.'
       properties:
         id:
           type: array
@@ -862,7 +862,7 @@ components:
             http://purl.org/dc/terms/title
           items:
             type: string
-            example: 'Skull cranium [Mesh] [Photogrammetry]'
+            example: 'Cranium [Mesh] [Photogrammetry]'
         media_type:
           type: array
           description: "Type, nature, or classification of a Media file dataset, which may include one or more specific files. This is the general or high-level type of all file data, it is not the file type of any specific file. Most Media Types encompass a variety of different specific file types. Values must be from the Media Type controlled vocabulary (https://www.morphosource.org/terms/mscv/MediaType).\n\thttp://www.morphosource.org/terms/ms/mediaType"
@@ -902,6 +902,7 @@ components:
             https://www.morphosource.org/terms/ms/ID
           items:
             type: string
+            example: '000123451'
         physical_object_id:
           type: array
           description: |-
@@ -909,6 +910,7 @@ components:
             https://www.morphosource.org/terms/ms/ID
           items:
             type: string
+            example: '000104732'
         physical_object_title:
           type: array
           description: |-
@@ -916,6 +918,7 @@ components:
             http://purl.org/dc/terms/title
           items:
             type: string
+            example: 'INST:COLL:SPEC1234'
         physical_object_organization:
           type: array
           description: |-
@@ -924,11 +927,13 @@ components:
             Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
+            example: Museum of Biological Specimens Collection of Vertebrates
         physical_object_type:
           type: array
           description: 'Type of the Object, typically "Biological Specimen" or "Cultural Heritage Object".'
           items:
             type: string
+            example: Biological Specimen
         physical_object_taxonomy_name:
           type: array
           description: 'Binomial taxonomic name, in most cases a combination of genus and species names. For objects identified only with higher order taxonomy, this may take the form of a higher order name followed by "indet."'
@@ -936,6 +941,7 @@ components:
             type: string
             x-stoplight:
               id: uafr8zm9zx65k
+            example: Puma concolor
         physical_object_taxonomy_gbif:
           type: array
           description: 'List of taxonomic names associated with this physical object through a GBIF aggregated taxonomy, if one is available.'
@@ -943,6 +949,7 @@ components:
             type: string
             x-stoplight:
               id: 0u6pb2oe3r8od
+            example: Felidae
         part:
           type: array
           description: |-
@@ -950,6 +957,7 @@ components:
             http://rs.tdwg.org/ac/terms/subjectPart
           items:
             type: string
+            example: Cranium
         side:
           type: array
           description: |-
@@ -958,6 +966,14 @@ components:
           items:
             type: string
             example: Midline
+        short_description:
+          type: array
+          description: |-
+            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
+            https://www.morphosource.org/terms/ms/shortDescription
+          items:
+            type: string
+            example: Mesh with texture and color of Puma concolor cranium
         creator:
           type: array
           description: |-
@@ -967,13 +983,7 @@ components:
             http://purl.org/dc/elements/1.1/creator
           items:
             type: string
-        short_description:
-          type: array
-          description: |-
-            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
-            https://www.morphosource.org/terms/ms/shortDescription
-          items:
-            type: string
+            example: Jane Smith
         description:
           type: array
           description: |-
@@ -983,6 +993,7 @@ components:
             http://purl.org/dc/elements/1.1/description
           items:
             type: string
+            example: Longer description with additional context of Media scanning or identity not captured in other fields.
         ip_holder:
           type: array
           description: |-
@@ -990,6 +1001,7 @@ components:
             https://www.morphosource.org/terms/ms/rightsHolder
           items:
             type: string
+            example: Museum of Biological Specimens
         copyright_statement:
           type: array
           description: |-
@@ -997,6 +1009,7 @@ components:
             https://www.morphosource.org/terms/ms/rightsStatement
           items:
             type: string
+            example: 'http://rightsstatements.org/vocab/NKC/1.0/'
         license:
           type: array
           description: |-
@@ -1006,6 +1019,7 @@ components:
             http://purl.org/dc/terms/license
           items:
             type: string
+            example: 'http://www.morphosource.org/terms/licenseUnknown/'
         morphosource_use_agreement_type:
           type: array
           description: |-
@@ -1013,6 +1027,7 @@ components:
             https://www.morphosource.org/terms/ms/morphosourceUseAgreementType
           items:
             type: string
+            example: Standard
         permits_commercial_use:
           type: array
           description: |
@@ -1031,92 +1046,173 @@ components:
             example: 3DPrintingLimited
         required_archival_of_published_derivatives:
           type: array
+          description: |-
+            Whether and how future derivatives created from Media must be rearchived on a public-facing digital repository such as MorphoSource. Values may include mandatory requirements or optional suggestions. Values must be from Derivative Rearchival Statement controlled vocabulary (http://www.morphosource.org/terms/mscv/DerivativeRearchivalStatement).
+            https://www.morphosource.org/terms/ms/requiredArchivalOfPublishedDerivatives
           items:
             type: string
+            example: OnAnyRepository
         funding:
           type: array
+          description: |-
+            Text description of organizations or individuals who funded the creation of the resource.
+            https://www.morphosource.org/terms/ms/funding
           items:
             type: string
+            example: NSF 123456789
         publisher:
           type: array
+          description: |-
+            Examples of a Publisher include a person, an organization, or a service. Typically, the name of a Publisher should be used to indicate the entity.
+
+            An entity responsible for making the resource available.
+            http://purl.org/dc/elements/1.1/publisher
           items:
             type: string
         cite_as:
           type: array
+          description: |-
+            Instructions and guidelines for the citation of a Media. This should include additional instructions beyond those included in other metadata fields or in any download usage agreement.
+            https://www.morphosource.org/terms/ms/citeAs
           items:
             type: string
         ark:
           type: array
+          description: |
+            Persistent identifier for MorphoSource Media automatically created on Media submission. ARKs can apply to both unpublished and published media.
+            https://www.morphosource.org/terms/ms/ark
           items:
             type: string
         doi:
           type: array
+          description: |-
+            Persistent identifier for MorphoSource Media created only on user request. DOIs can apply only to published media.
+            https://www.morphosource.org/terms/ms/doi
           items:
             type: string
         external_identifier:
           type: array
+          description: |-
+            Used to provide third-party or external identifiers, which may be URIs or UUIDs, for this Media.
+            http://purl.org/dc/terms/identifier
           items:
             type: string
         external_media_url:
           type: array
+          description: |-
+            URL for additional resource that might provide additional information about the Media or Physical Object.
+            https://www.morphosource.org/terms/ms/relatedURL
           items:
             type: string
         visibility:
           type: array
+          description: |-
+            Publication status, denoting whether or not Media may be found in public search and whether or not Media files may be downloaded. Values must be from Publication Status controlled vocabulary (http://www.morphosource.org/terms/ms/PublicationStatus).
+            https://www.morphosource.org/terms/ms/visibility
           items:
             type: string
+            example: Restricted
         in_collections:
           type: array
+          description: Names of projects and teams to which the Media belongs.
           items:
             type: string
         date_uploaded:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date of upload of the resource.
+            https://www.morphosource.org/terms/ms/dateUploaded
           items:
             type: string
+            example: '2022-02-02T19:00:37Z'
         date_modified:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date on which the resource was changed.
+            https://www.morphosource.org/terms/ms/dateModified
           items:
             type: string
+            example: '2022-02-02T19:00:37Z'
         legacy_media_group_id:
           type: array
+          description: |-
+            MorphoSource-specific unique ID identifier that was used to group Media together in the now-defunct 1.0 version of the MorphoSource repository. In MorphoSource 1.0, Media groups were used to collect all media derived from the same Imaging Event. Media groups are no longer used, with media-to-media imaging and processing event relationships now being used instead to track hierarchical relationships between Media. Only present if Media was originally contributed to MorphoSource 1.0. Different from morphosource:ID identifier.
+            https://www.morphosource.org/terms/ms/legacyMediaGroupID
           items:
             type: string
         legacy_media_file_id:
           type: array
+          description: |-
+            MorphoSource-specific unique ID identifier that was used to represent a Media in the now-defunct 1.0 version of the MorphoSource repository. Only present if Media was originally contributed to MorphoSource 1.0. Different from morphosource:ID identifier.
+            https://www.morphosource.org/terms/ms/legacyMediaFileID
           items:
             type: string
         x_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the X axis, for Media with pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to Image and CTImageSeries media.
+            https://www.morphosource.org/terms/ms/xSpacing
           items:
             type: string
+            example: '0.154'
         y_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the Y axis, for Media with pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to Image and CTImageSeries media.
+            https://www.morphosource.org/terms/ms/ySpacing
           items:
             type: string
+            example: '0.154'
         z_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the Z axis, for Media with 3D pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to CTImageSeries media.
+            http://www.morphosource.org/terms/ms/zSpacing
           items:
             type: string
+            example: '0.154'
         slice_thickness:
           type: array
+          description: |-
+            Nominal slice thickness, in mm.
+            http://purl.org/healthcarevocab/v1#SliceThickness
           items:
             type: string
         unit:
           type: array
+          description: |-
+            Length measurement unit. For Mesh Media, this is the length unit associated with the 3D coordinate space of the mesh. For CTImageSeries Media, this is the length unit for X/Y/Z pixel spacing. Values must be from the Length Measurement Unit controlled vocabulary (http://www.morphosource.org/terms/ms/LengthMeasurementUnit).
+            https://www.morphosource.org/terms/ms/unit
           items:
             type: string
+            example: Mm
         number_of_images_in_set:
           type: array
+          description: |-
+            For Media with a ZIP archive with many component files, this is the number of files in the primary image collection in a CT image stack or photogrammetry image collection. This only applies to CTImageSeries or PhotogrammetryImageSeries Media.
+            https://www.morphosource.org/terms/ms/numberOfImagesInSet
           items:
             type: string
         data_manager:
           type: array
+          description: |-
+            The user that has the highest level of management control over a Media or another Work record. For Media, this user is also known as the Data Manager.
+            https://www.morphosource.org/terms/ms/owner
           items:
             type: string
+            example: Jane Smith
         data_depositor:
           type: array
+          description: |-
+            The MorphoSource user who uploaded the Media. May or may not also be the Media Data Manager.
+            https://www.morphosource.org/terms/ms/depositor
           items:
             type: string
+            example: Jane Smith
     Physical-Object:
       title: Physical Object
       x-stoplight:
