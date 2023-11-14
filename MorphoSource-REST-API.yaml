@@ -966,14 +966,6 @@ components:
           items:
             type: string
             example: Midline
-        short_description:
-          type: array
-          description: |-
-            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
-            https://www.morphosource.org/terms/ms/shortDescription
-          items:
-            type: string
-            example: Mesh with texture and color of Puma concolor cranium
         creator:
           type: array
           description: |-
@@ -984,6 +976,14 @@ components:
           items:
             type: string
             example: Jane Smith
+        short_description:
+          type: array
+          description: |-
+            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
+            https://www.morphosource.org/terms/ms/shortDescription
+          items:
+            type: string
+            example: Mesh with texture and color of Puma concolor cranium
         description:
           type: array
           description: |-
@@ -1213,6 +1213,14 @@ components:
           items:
             type: string
             example: Jane Smith
+        data_sponsor:
+          type: array
+          description: The entity covering costs of data storage for this Media on MorphoSource.
+          items:
+            type: string
+            example: Jane Smith
+            x-stoplight:
+              id: 9nmj5frrts1im
     Physical-Object:
       title: Physical Object
       x-stoplight:
@@ -1222,66 +1230,128 @@ components:
       properties:
         id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.).
+            https://www.morphosource.org/terms/ms/PhysicalObject#ID
           items:
             type: string
         title:
           type: array
+          description: |-
+            For biological specimens, the combined institution code, collection code, and catalog number separated by colons as a Darwin Core triplet. For a cultural heritage object, this is either the Darwin Core triplet or a short object tile. 
+            http://purl.org/dc/terms/title
           items:
             type: string
         organization:
           type: array
+          description: |-
+            Organization name of the organization that manages the physical object from which the Media was imaged.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
         institution_code:
           type: array
+          description: |-
+            The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.
+            http://rs.tdwg.org/dwc/terms/institutionCode
           items:
             type: string
         collection_code:
           type: array
+          description: |-
+            The name, acronym, coden, or initialism identifying the collection or data set from which the record was derived.
+            http://rs.tdwg.org/dwc/terms/collectionCode
           items:
             type: string
         catalog_number:
           type: array
+          description: |-
+            An identifier (preferably unique) for the record within the data set or collection.
+            http://rs.tdwg.org/dwc/terms/catalogNumber
           items:
             type: string
         occurrence_id:
           type: array
+          description: |-
+            Recommended best practice is to use a persistent, globally unique identifier.
+
+            An identifier for the Occurrence (as opposed to a particular digital record of the occurrence). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the occurrenceID globally unique.
+            http://rs.tdwg.org/dwc/terms/occurrenceID
           items:
             type: string
         idigbio_uuid:
           type: array
+          description: |-
+            Global unique identifier for the Biological Specimen provided by iDigBio and used as the primary identifier of the Biological Specimen's record in the iDigBio aggregator if present. This is sometimes used in addition to more general identifiers or Darwin Core triplets (institution code : collection code : catalog number) to uniquely identify Biological Specimen.
+            https://www.morphosource.org/terms/ms/idigbioUUID
           items:
             type: string
         idigbio_recordset_id:
           type: array
+          description: |-
+            An identifier for an entire museum, institution, or laboratory specimen collection which includes the Biological Specimen. May be a global unique identifier or an identifier specific to a collection or institution.
+            https://www.morphosource.org/terms/ms/idigbioRecordsetID
           items:
             type: string
         type:
           type: array
+          description: 'Type of the Object, typically "Biological Specimen" or "Cultural Heritage Object".'
           items:
             type: string
         vouchered:
           type: array
+          description: |-
+            Whether the Biological Specimen is a holotype or not. If present, value must be "Yes" or "No".
+            https://www.morphosource.org/terms/ms/isTypeSpecimen
           items:
             type: string
-        taxonomy:
+        taxonomy_name:
           type: array
+          description: 'Binomial taxonomic name, in most cases a combination of genus and species names. For objects identified only with higher order taxonomy, this may take the form of a higher order name followed by "indet."'
           items:
             type: string
+            x-stoplight:
+              id: cybhh61iz02gf
+        taxonomy_gbif:
+          type: array
+          description: 'List of taxonomic names associated with this physical object through a GBIF aggregated taxonomy, if one is available.'
+          items:
+            type: string
+            x-stoplight:
+              id: sue4ujsxzbp26
         sex:
           type: array
+          description: |-
+            Recommended best practice is to use a controlled vocabulary.
+
+            The sex of the biological individual(s) represented in the Occurrence.
+            http://rs.tdwg.org/dwc/terms/sex
           items:
             type: string
         creator:
           type: array
+          description: |-
+            Entity responsible for collecting or creating the object.
+            http://purl.org/dc/elements/1.1/creator
           items:
             type: string
         date_uploaded:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date of upload of the resource. 
+            https://www.morphosource.org/terms/ms/dateUploaded
           items:
             type: string
         date_modified:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date on which the resource was changed. 
+            https://www.morphosource.org/terms/ms/dateModified
           items:
             type: string
     Catalog-Pages-Information:
