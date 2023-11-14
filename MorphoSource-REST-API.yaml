@@ -266,6 +266,7 @@ paths:
           name: f.sponsor
           description: Data Sponsor
       security:
+        - {}
         - API-Key: []
       tags:
         - Media endpoints
@@ -343,7 +344,7 @@ paths:
             type: string
           in: query
           name: q
-          description: 'Search query. This is optional, and without a query all Physical Object matching filter facet options will be shown. Omitting query and filter information can be used to query all Physical Objects.'
+          description: 'Search query. This is optional, and without a query all Physical Objects matching filter facet options will be shown. Omitting query and filter information can be used to query all Physical Objects.'
         - schema:
             type: integer
             default: 1
@@ -446,11 +447,12 @@ paths:
               examples: {}
       operationId: get-api-organization-id
       description: |-
-        Returns metadata for a single organization (a museum, institutional, or departmental collection of physical objects) record.
+        Returns metadata for a single Organization (a museum, institutional, or departmental collection of physical objects) record.
 
-        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+        It is possible to include an API key, but by default all Organization records are public. Therefore, this is generally unnecessary.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Organization endpoints
@@ -489,7 +491,7 @@ paths:
               examples: {}
       operationId: get-api-organizations
       description: |-
-        Searches for organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
+        Searches for multiple Organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
 
         It is possible to include an API key, but by default all organization records are public. Therefore, this is generally unnecessary.
       parameters:
@@ -503,8 +505,53 @@ paths:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Organizations matching filter facet options will be shown. Omitting query and filter information can be used to query all Organizations.'
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 1000
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+          in: query
+          name: f.organization_type
+          description: Organization Type
+        - schema:
+            type: string
+          in: query
+          name: f.institution_name
+          description: Institution Name
+        - schema:
+            type: string
+          in: query
+          name: f.institution_code
+          description: Institution Code
+        - schema:
+            type: string
+          in: query
+          name: f.country
+          description: Country
+        - schema:
+            type: string
+          in: query
+          name: f.state_province
+          description: State/Province
+        - schema:
+            type: string
+          in: query
+          name: f.city
+          description: City
       security:
+        - {}
         - API-Key: []
       tags:
         - Organization endpoints
@@ -529,11 +576,12 @@ paths:
               examples: {}
       operationId: get-api-project-id
       description: |-
-        Returns metadata for a single project or team record.
+        Returns metadata for a single Project or Team record.
 
-        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+        API key is optional. Querying published Projects or Teams does not require an API key. An API key can be used to query private Projects or Teams the user has specific access to view. If this route is used to query a Project or Team that does not exist, a Project or Team that is private and the request does not supply an API key, or a Project or Team that is private and an API key is supplied but the user does not have access to view the Media, then a 404 Not Found response will be returned.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Project or team endpoints
@@ -572,22 +620,41 @@ paths:
               examples: {}
       operationId: get-api-projects
       description: |-
-        Searches for project or team records and returns metadata. 
+        Searches for multiple Project or Team records and returns metadata. 
 
-        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+        API key is optional. Searching published Projects or Teams does not require an API key. An API key can be used to search private Projects or Teams the user has specific access to view.
       parameters:
-        - schema:
-            type: string
-            example: all_fields
-          in: query
-          name: search_field
-          description: Must be "all_fields" to use search query
         - schema:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Projects and Teams matching filter facet options will be shown. Omitting query and filter information can be used to query all Projects or Teams the user has access to view'
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 10
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+          in: query
+          name: f.type
+          description: Project or Team
+        - schema:
+            type: string
+          in: query
+          name: f.organization
+          description: Linked Organization
       security:
+        - {}
         - API-Key: []
       tags:
         - Project or team endpoints
