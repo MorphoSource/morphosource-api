@@ -240,6 +240,54 @@ paths:
         - {}
         - API-Key: []
       parameters: []
+  '/api/media/{media-id}/iiif/manifest':
+    parameters:
+      - schema:
+          type: string
+          minLength: 9
+          maxLength: 9
+          example: '000200043'
+        name: media-id
+        in: path
+        required: true
+        description: Unique media record ID. Should be a string of 9 numeric characters.
+    get:
+      summary: Get individual media IIIF manifest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    x-stoplight:
+                      id: r10c7zpz6udda
+                    properties:
+                      media:
+                        $ref: '#/components/schemas/Media-IIIF-Manifest'
+                        x-stoplight:
+                          id: 02k22ahm2orbi
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
+      operationId: get-api-media-media-id-iiif-manifest
+      x-stoplight:
+        id: 3clfct1x09z8k
+      tags:
+        - Media endpoints
+      security:
+        - {}
+        - API-Key: []
+      description: |
+        Returns URL for the IIIF Presentation API manifest document for Media. Manifest is a JSON document that uses the IIIF Presentation API to provide a contextualized 3D, 2D, or AV preview of the file associated with the Media in a format suitable for use in other IIIF-compatible viewers and tools. 
+
+        To use this endpoint, you must provide an API key associated with an active MorphoSource user account. A 401 Unauthorized response will be returned if no API key is present or if the API key is not associated with a valid user.
+
+        Please note that IIIF Presentation manifests for private MorphoSource media will not be accessible if referenced or embedded in other viewers, only manifests of published media should be used for that use case.
   /api/media:
     get:
       summary: Search media records
@@ -1849,6 +1897,26 @@ components:
             x-stoplight:
               id: oxvz0860rftm6
             type: string
+    Media-IIIF-Manifest:
+      title: Media-IIIF-Manifest
+      x-stoplight:
+        id: ha297vet9k5i9
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 7w5exfo043liu
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.). 
+            https://www.morphosource.org/terms/ms/ID
+          example: '000200043'
+        manifest_url:
+          type: string
+          x-stoplight:
+            id: jmoj9zzbpv5jn
+          description: URL of IIIF Presentation API manifest for Media.
+      description: ''
     Physical-Object:
       title: Physical Object
       x-stoplight:
