@@ -71,6 +71,86 @@ servers:
   - url: 'https://www.morphosource.org'
     description: MorphoSource
 paths:
+  '/api/download/{media-id}':
+    post:
+      summary: Download media file
+      operationId: post-api-download-media-id
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    x-stoplight:
+                      id: 4ll5cxxqb2feb
+                    properties:
+                      media:
+                        type: object
+                        x-stoplight:
+                          id: s4qe8mx5nyu88
+                        properties:
+                          id:
+                            type: array
+                            x-stoplight:
+                              id: jetmccfenbrak
+                            items:
+                              x-stoplight:
+                                id: shx8h1mrcm372
+                              type: string
+                          download_url:
+                            type: array
+                            x-stoplight:
+                              id: 5xxewa82c5ja5
+                            items:
+                              x-stoplight:
+                                id: nweu6wk70e3th
+                              type: string
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
+      x-stoplight:
+        id: stzmm22vruz2k
+      requestBody:
+        $ref: '#/components/requestBodies/Download-Request'
+      security:
+        - API-Key: []
+      description: |-
+        Retrieves a file download URL for a single media if the user is authorized to download requested media. This endpoint can be used to achieve media file downloads using the API. Please note: this endpoint is significantly different from other routes provided by the API, so please read the description carefully. Also see the provided **Request Sample** for an example successful request.
+
+        To use this endpoint, users must identify themselves and provide information relating to how downloaded media will be used. The following information must be supplied:
+        - The media ID the user wants to download, provided as a URL path parameter.
+        - The API key linked to the downloading user's MorphoSource account, provided as an authorization header.
+        - A download use statement providing a free-text description of use intent at least 50 characters in length.
+        - A response to a use category survey, in which the user indicates one or more specific use categories that describe the download use intent. Only certain approved use categories are allowed, see **Body** section below for allowed values. Alternately, if the use category survey allowed values do not suitably describe a user's download intent, the user can instead provide a free-text `use_category_other` that permits custom use categories to be described. One of either `use_category` or `use_category_other` must be supplied, however.  
+        - User should indicate with a boolean value (`true`) that they agree to all relevant terms for download use and reuse as specified by MorphoSource and the data contributor who uploaded the media. See the particular media page on MorphoSource or query media metadata via API in order to learn more about what use restriction terms, licenses, and agreements may apply.
+
+        If the request is successful, the response will include a direct download URL that can be used to download the media file. **Response Example** to the right demonstrates a response from a successful request. 
+
+        Requests made to the direct download URL must still include the user's API key. The direct download URL identifies the requesting user specifically and is only to be used by the requesting user. See below for an example CURL usage to download a file from a direct download URL to a file name suggested by the API: 
+
+        ```
+        curl \
+          --url "$DOWNLOAD_URL" \
+          --header 'Authorization: $API_KEY' \
+          --remote-name \
+          --remote-header-name 
+        ```
+      tags:
+        - Media endpoints
+    parameters:
+      - schema:
+          type: string
+        name: media-id
+        in: path
+        required: true
   '/api/media/{media-id}':
     get:
       summary: Get individual media record
@@ -112,6 +192,53 @@ paths:
         in: path
         description: Unique media record ID. Should be a string of 9 numeric characters.
         required: true
+  '/api/media/{media-id}/file-metadata':
+    parameters:
+      - schema:
+          type: string
+          minLength: 9
+          maxLength: 9
+          example: '000200043'
+        name: media-id
+        in: path
+        required: true
+        description: Unique media record ID. Should be a string of 9 numeric characters.
+    get:
+      summary: Get individual media file metadata
+      tags:
+        - Media endpoints
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    x-stoplight:
+                      id: h2yncaqli83kj
+                    properties:
+                      file_set:
+                        $ref: '#/components/schemas/Media-File-Metadata'
+                        x-stoplight:
+                          id: 5rweg3gxhkvxn
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
+      operationId: get-api-media-media-id-file-metadata
+      x-stoplight:
+        id: c7dcuud1iq44q
+      description: |-
+        Returns metadata specific to file object associated with a single Media record. 
+
+        If the Media does not have an uploaded file, then an empty response will be returned: `{ "response": {} }`.
+
+        API key is optional. Querying published media does not require an API key. An API key can be used to query private Media the user has specific access to view. If this route is used to query a Media that does not exist, a Media that is private and the request does not supply an API key, or a Media that is private and an API key is supplied but the user does not have access to view the Media, then a 404 Not Found response will be returned.
+      security:
+        - {}
+        - API-Key: []
+      parameters: []
   /api/media:
     get:
       summary: Search media records
@@ -1018,86 +1145,6 @@ paths:
         in: path
         required: true
         description: Unique team record ID. Should be a string of 9 numeric characters.
-  '/api/download/{media-id}':
-    parameters:
-      - schema:
-          type: string
-        name: media-id
-        in: path
-        required: true
-    post:
-      summary: Download media file
-      operationId: post-api-download-media-id
-      responses:
-        '200':
-          description: OK
-          headers: {}
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  response:
-                    type: object
-                    x-stoplight:
-                      id: 4ll5cxxqb2feb
-                    properties:
-                      media:
-                        type: object
-                        x-stoplight:
-                          id: s4qe8mx5nyu88
-                        properties:
-                          id:
-                            type: array
-                            x-stoplight:
-                              id: jetmccfenbrak
-                            items:
-                              x-stoplight:
-                                id: shx8h1mrcm372
-                              type: string
-                          download_url:
-                            type: array
-                            x-stoplight:
-                              id: 5xxewa82c5ja5
-                            items:
-                              x-stoplight:
-                                id: nweu6wk70e3th
-                              type: string
-        '400':
-          $ref: '#/components/responses/400-Bad-Request'
-        '401':
-          $ref: '#/components/responses/401-Authentication-Required'
-        '404':
-          $ref: '#/components/responses/404-Not-Found'
-      x-stoplight:
-        id: stzmm22vruz2k
-      requestBody:
-        $ref: '#/components/requestBodies/Download-Request'
-      security:
-        - API-Key: []
-      description: |-
-        Retrieves a file download URL for a single media if the user is authorized to download requested media. This endpoint can be used to achieve media file downloads using the API. Please note: this endpoint is significantly different from other routes provided by the API, so please read the description carefully. Also see the provided **Request Sample** for an example successful request.
-
-        To use this endpoint, users must identify themselves and provide information relating to how downloaded media will be used. The following information must be supplied:
-        - The media ID the user wants to download, provided as a URL path parameter.
-        - The API key linked to the downloading user's MorphoSource account, provided as an authorization header.
-        - A download use statement providing a free-text description of use intent at least 50 characters in length.
-        - A response to a use category survey, in which the user indicates one or more specific use categories that describe the download use intent. Only certain approved use categories are allowed, see **Body** section below for allowed values. Alternately, if the use category survey allowed values do not suitably describe a user's download intent, the user can instead provide a free-text `use_category_other` that permits custom use categories to be described. One of either `use_category` or `use_category_other` must be supplied, however.  
-        - User should indicate with a boolean value (`true`) that they agree to all relevant terms for download use and reuse as specified by MorphoSource and the data contributor who uploaded the media. See the particular media page on MorphoSource or query media metadata via API in order to learn more about what use restriction terms, licenses, and agreements may apply.
-
-        If the request is successful, the response will include a direct download URL that can be used to download the media file. **Response Example** to the right demonstrates a response from a successful request. 
-
-        Requests made to the direct download URL must still include the user's API key. The direct download URL identifies the requesting user specifically and is only to be used by the requesting user. See below for an example CURL usage to download a file from a direct download URL to a file name suggested by the API: 
-
-        ```
-        curl \
-          --url "$DOWNLOAD_URL" \
-          --header 'Authorization: $API_KEY' \
-          --remote-name \
-          --remote-header-name 
-        ```
-      tags:
-        - Media endpoints
 components:
   schemas:
     Media:
@@ -1487,6 +1534,319 @@ components:
           items:
             x-stoplight:
               id: my6vebwdo0nh2
+            type: string
+    Media-File-Metadata:
+      title: Media-File-Metadata
+      x-stoplight:
+        id: 6cms9ad8zxifj
+      type: object
+      properties:
+        file_name:
+          type: array
+          x-stoplight:
+            id: ojbb1zjoxxjxv
+          description: |-
+            Identifying name label given to a file.
+            https://www.morphosource.org/terms/ms/fileName
+          items:
+            x-stoplight:
+              id: pddaai9crlejr
+            type: string
+        file_size:
+          type: array
+          x-stoplight:
+            id: tal9dqyscny1d
+          description: |-
+            Size of a file in bytes.
+            https://www.morphosource.org/terms/ms/fileSize
+          items:
+            x-stoplight:
+              id: ulkwf00tmxwae
+            type: integer
+        mime_type:
+          type: array
+          x-stoplight:
+            id: p26i4cvj7t9g2
+          description: |-
+            Media type describing the nature and format of a file.
+            https://www.morphosource.org/terms/ms/FileSet#fileName
+          items:
+            x-stoplight:
+              id: 03dmchmesufgc
+            type: string
+        point_count:
+          type: array
+          x-stoplight:
+            id: h8uteco2uc3i6
+          description: |-
+            Number of 3D coordinate points comprising a 3D mesh or point cloud.
+            https://www.morphosource.org/terms/ms/pointCount
+          items:
+            x-stoplight:
+              id: x0v93tilnh5hu
+            type: string
+        face_count:
+          type: array
+          x-stoplight:
+            id: 15ws5tenouht2
+          description: |-
+            Number of polygonal faces comprising a 3D mesh.
+            https://www.morphosource.org/terms/ms/faceCount
+          items:
+            x-stoplight:
+              id: gjcnlcwkeubc6
+            type: string
+        has_uv_space:
+          type: array
+          x-stoplight:
+            id: lchypz1pwrspr
+          description: |-
+            Whether or not a mapping exists to project a 3D object's surface to a 2D image for texture mapping and is present with the 3D object. Values should be "Yes" or "No".
+            https://www.morphosource.org/terms/ms/hasUVSpace
+          items:
+            x-stoplight:
+              id: pwpayvqraue03
+            type: string
+        vertex_color:
+          type: array
+          x-stoplight:
+            id: du6tlbxmzmujk
+          description: |-
+            Whether or not a 3D object has color information encoded into vertices or points that comprise a mesh or point cloud.
+            https://www.morphosource.org/terms/ms/vertexColor
+          items:
+            x-stoplight:
+              id: 2vrqinjzwxiqt
+            type: string
+        bounding_box_x:
+          type: array
+          x-stoplight:
+            id: bqlxtagjz1x3j
+          description: |-
+            Length across the X axis of the rectangular bounding box surrounding a 3D digital object.
+            https://www.morphosource.org/terms/ms/boundingBoxX
+          items:
+            x-stoplight:
+              id: zkis9qs91au7g
+            type: string
+        bounding_box_y:
+          type: array
+          x-stoplight:
+            id: aje7zz534odkn
+          description: "\t\nLength across the Y axis of the rectangular bounding box surrounding a 3D digital object.\nhttps://www.morphosource.org/terms/ms/boundingBoxY"
+          items:
+            x-stoplight:
+              id: rggu9ttdk3zbw
+            type: string
+        bounding_box_z:
+          type: array
+          x-stoplight:
+            id: jss2hlc1hyeca
+          description: |-
+            Length across the Z axis of the rectangular bounding box surrounding a 3D digital object.
+            http://www.morphosource.org/terms/ms/boundingBoxZ
+          items:
+            x-stoplight:
+              id: ypib8ebplejtd
+            type: string
+        centroid_x:
+          type: array
+          x-stoplight:
+            id: apujmfhy7sbuz
+          description: |-
+            X axis coordinate of the centroid of a 3D object, where the centroid is the geometric center point of the object.
+            https://www.morphosource.org/terms/ms/centroidX
+          items:
+            x-stoplight:
+              id: gk11ez6v809et
+            type: string
+        centroid_y:
+          type: array
+          x-stoplight:
+            id: g61ymimi4kwbe
+          description: |-
+            Y axis coordinate of the centroid of a 3D object, where the centroid is the geometric center point of the object.
+            https://www.morphosource.org/terms/ms/centroidY
+          items:
+            x-stoplight:
+              id: 8q6pto32z44hw
+            type: string
+        centroid_z:
+          type: array
+          x-stoplight:
+            id: 8ydharv6vatwo
+          description: |-
+            Z axis coordinate of the centroid of a 3D object, where the centroid is the geometric center point of the object.
+            https://www.morphosource.org/terms/ms/centroidZ
+          items:
+            x-stoplight:
+              id: rpv828c42wq7e
+            type: string
+        height:
+          type: array
+          x-stoplight:
+            id: namcmmped32ne
+          description: |-
+            Height of a 2D image in pixels.
+            https://www.morphosource.org/terms/ms/height
+          items:
+            x-stoplight:
+              id: 7dwojxnkrecll
+            type: integer
+        width:
+          type: array
+          x-stoplight:
+            id: elmdjqbj5rjms
+          description: |-
+            Width of a 2D image in pixels.
+            https://www.morphosource.org/terms/ms/width
+          items:
+            x-stoplight:
+              id: agdu61642l0rt
+            type: integer
+        color_space:
+          type: array
+          x-stoplight:
+            id: 9sv9uwtj5nqyj
+          description: |-
+            Color space of image data. Values should be from the controlled vocabulary of short string labels for color spaces defined in the TIFF Tag PhotometricInterpretation (https://www.awaresystems.be/imaging/tiff/tifftags/photometricinterpretation.html).
+            https://www.morphosource.org/terms/ms/colorSpace
+          items:
+            x-stoplight:
+              id: 4bf5d6gyrocp2
+            type: string
+        bits_allocated:
+          type: array
+          x-stoplight:
+            id: kiwbejdusl2zz
+          description: |-
+            Number of bits allocated for each pixel sample. Each sample shall have the same number of bits allocated. Bits Allocated (0028,0100) shall be either 1, or a multiple of 8. See PS3.5 for further explanation.
+            http://purl.org/healthcarevocab/v1#BitsAllocated
+          items:
+            x-stoplight:
+              id: cqebtqsy9lu5n
+            type: string
+        bits_per_sample:
+          type: array
+          x-stoplight:
+            id: 75buq2qza2a0n
+          description: |-
+            The number of bits per image component. In this standard each component of the image is 8 bits, so the value for this tag is 8. See also SamplesPerPixel. In JPEG compressed data a JPEG marker is used instead of this tag.
+            http://www.w3.org/2003/12/exif/ns#bitsPerSample
+          items:
+            x-stoplight:
+              id: renesl44hlgq2
+            type: string
+        compression:
+          type: array
+          x-stoplight:
+            id: 0q2pvnhptyq9n
+          description: |-
+            Compression scheme used on image data. Values should be from the controlled vocabulary of short string labels for compression schemes defined in the TIFF Tag Compression (https://www.awaresystems.be/imaging/tiff/tifftags/compression.html).
+            https://www.morphosource.org/terms/ms/compression
+          items:
+            x-stoplight:
+              id: kmq55coqlh34u
+            type: string
+        rows:
+          type: array
+          x-stoplight:
+            id: br3xjuaf5qy84
+          description: |-
+            Number of rows in the image.
+
+            Shall be an exact multiple of the vertical downsampling factor if any of the samples (planes) are encoded downsampled in the vertical direction for pixel data encoded in a Native (uncompressed) format. E.g., required to be an even value for a Photometric Interpretation (0028,0004) of YBR_FULL_422.
+
+            http://purl.org/healthcarevocab/v1#Rows
+          items:
+            x-stoplight:
+              id: hjbt7rkh920h1
+            type: string
+        columns:
+          type: array
+          x-stoplight:
+            id: ta3v564em2g7w
+          description: |-
+            Number of columns in the image.
+
+            Shall be an exact multiple of the horizontal downsampling factor if any of the samples (planes) are encoded downsampled in the horizontal direction for pixel data encoded in a Native (uncompressed) format. E.g., required to be an even value for a Photometric Interpretation (0028,0004) of YBR_FULL_422.
+
+            http://purl.org/healthcarevocab/v1#Columns
+          items:
+            x-stoplight:
+              id: iafnamvrvdf7g
+            type: string
+        contents_accepted_file_count:
+          type: array
+          x-stoplight:
+            id: nz3se9nuisivy
+          description: |-
+            For a ZIP archive file, the largest number of system-recognized files with the same system-permissible file type located in a single directory. In MorphoSource, this is used to document the number of files in the primary image collection in a CT image stack or photogrammetry image collection.
+            https://www.morphosource.org/terms/ms/contentsAcceptedFileCount
+          items:
+            x-stoplight:
+              id: z4tn2wjbgvs7h
+            type: string
+        contents_file_name:
+          type: array
+          x-stoplight:
+            id: 9lp33rf2tmdbk
+          description: |-
+            For a ZIP archive file, the file name of a single representative example of the largest number of system-recognized files with the same system-permissible file type located in a single directory. In MorphoSource, this is used to document a single file that is representative of the primary image collection in a CT image stack or photogrammetry image collection or the central mesh in a multi-file mesh archive.
+            https://www.morphosource.org/terms/ms/contentsFileName
+          items:
+            x-stoplight:
+              id: 0znwg2r41jzkp
+            type: string
+        contents_file_size:
+          type: array
+          x-stoplight:
+            id: q0tp4z72bca9b
+          description: |-
+            For a ZIP archive file, the file size of a single representative example of the largest number of system-recognized files with the same system-permissible file type located in a single directory. In MorphoSource, this is used to document file size for a single file that is representative of the primary image collection in a CT image stack or photogrammetry image collection or the central mesh in a multi-file mesh archive.
+            https://www.morphosource.org/terms/ms/contentsFileSize
+          items:
+            x-stoplight:
+              id: fwk84zuikhizi
+            type: string
+        contents_mime_type:
+          type: array
+          x-stoplight:
+            id: zf48lyxv8dsz5
+          description: |-
+            For a ZIP archive file, the mime type of a single representative example of the largest number of system-recognized files with the same system-permissible file type located in a single directory. In MorphoSource, this is used to document a single file that is representative of the primary image collection in a CT image stack or photogrammetry image collection or the central mesh in a multi-file mesh archive.
+            https://www.morphosource.org/terms/ms/contentsMimeType
+          items:
+            x-stoplight:
+              id: mq79igg1urh9k
+            type: string
+        date_uploaded:
+          type: array
+          x-stoplight:
+            id: 4qkkod7u477jp
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date of upload of the resource.
+
+            https://www.morphosource.org/terms/ms/dateUploaded
+          items:
+            x-stoplight:
+              id: 4ltg2n86x91z7
+            type: string
+        date_modified:
+          type: array
+          x-stoplight:
+            id: rxkircl6dvj41
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date on which the resource was changed.
+
+            https://www.morphosource.org/terms/ms/dateModified
+          items:
+            x-stoplight:
+              id: oxvz0860rftm6
             type: string
     Physical-Object:
       title: Physical Object
