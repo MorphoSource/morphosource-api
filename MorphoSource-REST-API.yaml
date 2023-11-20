@@ -1473,6 +1473,15 @@ components:
             example: Jane Smith
             x-stoplight:
               id: 9nmj5frrts1im
+        file_thumbnail_url:
+          type: array
+          x-stoplight:
+            id: jn9ihjg0ucrsp
+          description: URL path of 2D thumbnail for Media.
+          items:
+            x-stoplight:
+              id: my6vebwdo0nh2
+            type: string
     Physical-Object:
       title: Physical Object
       x-stoplight:
