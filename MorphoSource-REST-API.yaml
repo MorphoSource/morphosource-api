@@ -3,7 +3,7 @@ x-stoplight:
   id: rm6bqdolcidct
 info:
   title: MorphoSource REST API
-  version: 0.4.0
+  version: 0.5.0
   summary: MorphoSource REST API to retrieve metadata for repository records
   contact:
     name: Julie Winchester
@@ -89,13 +89,16 @@ paths:
                       media:
                         $ref: '#/components/schemas/Media'
               examples: {}
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-media-id
       description: |-
-        Returns metadata for a single media record. 
+        Returns metadata for a single Media record. 
 
-        API key is not required for published media, but can be used to authenticate access to private media.
+        API key is optional. Querying published media does not require an API key. An API key can be used to query private Media the user has specific access to view. If this route is used to query a Media that does not exist, a Media that is private and the request does not supply an API key, or a Media that is private and an API key is supplied but the user does not have access to view the Media, then a 404 Not Found response will be returned.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Media endpoints
@@ -137,22 +140,133 @@ paths:
               examples: {}
       operationId: get-api-media
       description: |-
-        Searches for media records and returns metadata. 
+        Searches for multiple Media records and returns metadata. A free text search query parameter is used to search across many different Media record fields. Results will be returned in paged format, with default results being returned for the first page of up to 1,000 results. Results can be filtered through the use of filter facets, which should always be supplied as query parameters in the form "f.<field_name>". See below for the list of applicable filter facet fields. This route provides equivalent functionality to the MorphoSource Media Search page (https://www.morphosource.org/catalog/media), the use of query parameters is very similar between that page and this endpoint. Experimenting with the features of the Media Search page may be instructive for use of this endpoint.
 
-        API key is not required for published media, but can be used to authenticate access to private media.
+        API key is optional. Searching published media does not require an API key. An API key can be used to search private media the user has specific access to view.
       parameters:
-        - schema:
-            type: string
-            example: all_fields
-          in: query
-          name: search_field
-          description: Must be "all_fields" to use search query
         - schema:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Media matching filter facet options will be shown. Omitting query and filter information can be used to query all Media the user has access to view'
+        - schema:
+            type: integer
+            default: 1
+            format: int32
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            default: 10
+            maximum: 1000
+            minimum: 1
+            format: int32
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+            example: CT Image Series
+          in: query
+          name: f.media_type
+          description: Media Type
+        - schema:
+            type: string
+            example: MicroNanoXRayComputedTomography
+          in: query
+          name: f.modality
+          description: Modality
+        - schema:
+            type: string
+            example: Biological Specimen
+          in: query
+          name: f.object_type
+          description: Object Type
+        - schema:
+            type: string
+            example: Museum of Biological Specimens Collection of Vertebrates
+          in: query
+          name: f.organization
+          description: Organization
+        - schema:
+            type: string
+            example: University of Education Facility for Scanning Things
+          in: query
+          name: f.imaging_facility
+          description: Imaging Facility
+        - schema:
+            type: string
+            example: Open Download
+          in: query
+          name: f.publication_status
+          description: Publication Status
+        - schema:
+            type: string
+            example: 'http://rightsstatements.org/vocab/InC/1.0/'
+          in: query
+          name: f.rights_statement
+          description: Rights Statement
+        - schema:
+            type: string
+            example: 'https://creativecommons.org/licenses/by-nc/4.0/'
+          in: query
+          name: f.license
+          description: CC License
+        - schema:
+            type: string
+            example: Puma concolor
+          in: query
+          name: f.taxonomy_name
+          description: Taxonomy (Name)
+        - schema:
+            type: string
+            example: Felidae
+          in: query
+          name: f.taxonomy_gbif
+          description: Taxonomy (GBIF)
+        - schema:
+            type: string
+          in: query
+          name: f.tag
+          description: Tag
+        - schema:
+            type: string
+          in: query
+          name: f.team
+          description: Team Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.project
+          description: Project Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.media_list
+          description: Media List Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.seq_section_list
+          description: Sequential Section List Containing Media
+        - schema:
+            type: string
+          in: query
+          name: f.owner
+          description: Data Manager
+        - schema:
+            type: string
+          in: query
+          name: f.depositor
+          description: Data Uploader
+        - schema:
+            type: string
+          in: query
+          name: f.sponsor
+          description: Data Sponsor
       security:
+        - {}
         - API-Key: []
       tags:
         - Media endpoints
@@ -177,11 +291,12 @@ paths:
               examples: {}
       operationId: get-api-physical-object-id
       description: |-
-        Returns metadata for a single physical object (biological specimen or cultural heritage object) record.
+        Returns metadata for a single Physical Object (Biological Specimen or Cultural Heritage Object) record.
 
-        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+        It is possible to include an API key, but by default all Physical Object records are public. Therefore, this is generally unnecessary.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Physical object endpoints
@@ -221,25 +336,96 @@ paths:
               examples: {}
       operationId: get-api-physical-objects
       description: |-
-        Searches for physical object (biological specimen or cultural heritage object) records and returns metadata. 
+        Searches for multiple Physical Object (Biological Specimen or Cultural Heritage Object) records and returns metadata. A free text search query parameter is used to search across many different Physical Object record fields. Results will be returned in paged format, with default results being returned for the first page of up to 1,000 results. Results can be filtered through the use of filter facets, which should always be supplied as query parameters in the form "f.<field_name>". See below for the list of applicable filter facet fields. This route provides equivalent functionality to the MorphoSource Object Search page (https://www.morphosource.org/catalog/objects), the use of query parameters is very similar between that page and this endpoint. Experimenting with the features of the Object Search page may be instructive for use of this endpoint.
 
-        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+        It is possible to include an API key, but by default all Physical Object records are public. Therefore, this is generally unnecessary.
       parameters:
-        - schema:
-            type: string
-            example: all_fields
-          in: query
-          name: search_field
-          description: Must be "all_fields" to use search query
         - schema:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Physical Objects matching filter facet options will be shown. Omitting query and filter information can be used to query all Physical Objects.'
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 1000
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+            example: Biological Specimen
+          in: query
+          name: f.object_type
+          description: Object Type
+        - schema:
+            type: string
+          in: query
+          name: f.creator
+          description: Collector/Creator
+        - schema:
+            type: string
+            example: Museum of Biological Specimens Collection of Vertebrates
+          in: query
+          name: f.organization
+          description: Organization
+        - schema:
+            type: string
+            example: Puma concolor
+          in: query
+          name: f.taxonomy_name
+          description: Taxonomy (Name)
+        - schema:
+            type: string
+            example: Felidae
+          in: query
+          name: f.taxonomy_gbif
+          description: Taxonomy (GBIF)
+        - schema:
+            type: string
+            example: CT Image Series
+          in: query
+          name: f.media_type
+          description: Media Type
+        - schema:
+            type: string
+          in: query
+          name: f.media_tag
+          description: Media Tag
+        - schema:
+            type: string
+          in: query
+          name: f.team
+          description: Team Containing Media of Object
+        - schema:
+            type: string
+          in: query
+          name: f.project
+          description: Project Containing Media of Object
+        - schema:
+            type: string
+          in: query
+          name: f.media_list
+          description: Media List Containing Media of Object
+        - schema:
+            type: string
+          in: query
+          name: f.seq_section_list
+          description: Sequential Section List Containing Media of Object
       security:
+        - {}
         - API-Key: []
       tags:
         - Physical object endpoints
+      requestBody:
+        content: {}
     parameters: []
   '/api/organizations/{organization-id}':
     get:
@@ -261,11 +447,12 @@ paths:
               examples: {}
       operationId: get-api-organization-id
       description: |-
-        Returns metadata for a single organization (a museum, institutional, or departmental collection of physical objects) record.
+        Returns metadata for a single Organization (a museum, institutional, or departmental collection of physical objects) record.
 
-        It is possible to include an API key, but by default all physical object records are public. Therefore, this is generally unnecessary.
+        It is possible to include an API key, but by default all Organization records are public. Therefore, this is generally unnecessary.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Organization endpoints
@@ -304,7 +491,7 @@ paths:
               examples: {}
       operationId: get-api-organizations
       description: |-
-        Searches for organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
+        Searches for multiple Organization (a museum, institutional, or departmental collection of physical objects) records and returns metadata. 
 
         It is possible to include an API key, but by default all organization records are public. Therefore, this is generally unnecessary.
       parameters:
@@ -318,8 +505,53 @@ paths:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Organizations matching filter facet options will be shown. Omitting query and filter information can be used to query all Organizations.'
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 1000
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+          in: query
+          name: f.organization_type
+          description: Organization Type
+        - schema:
+            type: string
+          in: query
+          name: f.institution_name
+          description: Institution Name
+        - schema:
+            type: string
+          in: query
+          name: f.institution_code
+          description: Institution Code
+        - schema:
+            type: string
+          in: query
+          name: f.country
+          description: Country
+        - schema:
+            type: string
+          in: query
+          name: f.state_province
+          description: State/Province
+        - schema:
+            type: string
+          in: query
+          name: f.city
+          description: City
       security:
+        - {}
         - API-Key: []
       tags:
         - Organization endpoints
@@ -344,11 +576,12 @@ paths:
               examples: {}
       operationId: get-api-project-id
       description: |-
-        Returns metadata for a single project or team record.
+        Returns metadata for a single Project or Team record.
 
-        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+        API key is optional. Querying published Projects or Teams does not require an API key. An API key can be used to query private Projects or Teams the user has specific access to view. If this route is used to query a Project or Team that does not exist, a Project or Team that is private and the request does not supply an API key, or a Project or Team that is private and an API key is supplied but the user does not have access to view the Media, then a 404 Not Found response will be returned.
       parameters: []
       security:
+        - {}
         - API-Key: []
       tags:
         - Project or team endpoints
@@ -387,22 +620,41 @@ paths:
               examples: {}
       operationId: get-api-projects
       description: |-
-        Searches for project or team records and returns metadata. 
+        Searches for multiple Project or Team records and returns metadata. 
 
-        API key is not required for published projects or teams, but can be used to authenticate access to private projects or teams.
+        API key is optional. Searching published Projects or Teams does not require an API key. An API key can be used to search private Projects or Teams the user has specific access to view.
       parameters:
-        - schema:
-            type: string
-            example: all_fields
-          in: query
-          name: search_field
-          description: Must be "all_fields" to use search query
         - schema:
             type: string
           in: query
           name: q
-          description: Search query
+          description: 'Search query. This is optional, and without a query all Projects and Teams matching filter facet options will be shown. Omitting query and filter information can be used to query all Projects or Teams the user has access to view'
+        - schema:
+            type: integer
+            default: 1
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment.
+        - schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 10
+          in: query
+          name: per_page
+          description: Number of results to display. Maximum value of 1000 results per page.
+        - schema:
+            type: string
+          in: query
+          name: f.type
+          description: Project or Team
+        - schema:
+            type: string
+          in: query
+          name: f.organization
+          description: Linked Organization
       security:
+        - {}
         - API-Key: []
       tags:
         - Project or team endpoints
@@ -847,188 +1099,380 @@ components:
       x-stoplight:
         id: kmijtc5zxqytw
       type: object
-      description: 'Record for 3D, 2D, or AV media representing a physical object. This model represents the results from a search or individual record query.'
+      description: 'Record for 3D, 2D, or AV media representing a physical object. This model represents the results from a search or individual record query. Some fields may only be relevant to particular media types and/or modalities, and will not pertain to all Media records.'
       properties:
         id:
           type: array
+          description: "\t\nMorphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.).\nhttps://www.morphosource.org/terms/ms/ID"
           items:
             type: string
+            example: '000123456'
         title:
           type: array
+          description: |-
+            A name given to the resource.
+            http://purl.org/dc/terms/title
           items:
             type: string
+            example: 'Cranium [Mesh] [Photogrammetry]'
         media_type:
           type: array
+          description: "Type, nature, or classification of a Media file dataset, which may include one or more specific files. This is the general or high-level type of all file data, it is not the file type of any specific file. Most Media Types encompass a variety of different specific file types. Values must be from the Media Type controlled vocabulary (https://www.morphosource.org/terms/mscv/MediaType).\n\thttp://www.morphosource.org/terms/ms/mediaType"
           items:
             type: string
+            example: Mesh
         modality:
           type: array
+          description: |-
+            The imaging modality used in the imaging event. Value must be from Image Modality controlled vocabulary (https://www.morphosource.org/terms/mscv/ImageModalityType).
+            http://www.morphosource.org/terms/ms/ieModality
           items:
             type: string
+            example: Photogrammetry
         device:
           type: array
+          description: |-
+            Manufacturer and model names of device used to image physical object to create media.
+
+            Device record class: https://www.morphosource.org/terms/ms/Device
           items:
             type: string
+            example: CameraCorp Camera D8500
         device_facility:
           type: array
+          description: |-
+            Institution and organization name for imaging facility that imaged physical object to create Media.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
+            example: University of Education Imaging Facility for Scanning Things
         media_parent_id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.). Specifically, the ID for the Media with a parental hierarchical relationship to this Media.
+            https://www.morphosource.org/terms/ms/ID
           items:
             type: string
+            example: '000123451'
         physical_object_id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.). Specifically, the ID for the record of the physical object that this Media represents.
+            https://www.morphosource.org/terms/ms/ID
           items:
             type: string
+            example: '000104732'
         physical_object_title:
           type: array
+          description: |-
+            For biological specimens, the combined institution code, collection code, and catalog number separated by colons as a Darwin Core triplet. For a cultural heritage object, this is either the Darwin Core triplet or a short object tile. 
+            http://purl.org/dc/terms/title
           items:
             type: string
+            example: 'INST:COLL:SPEC1234'
         physical_object_organization:
           type: array
+          description: |-
+            Organization name of the organization that manages the physical object from which the Media was imaged.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
+            example: Museum of Biological Specimens Collection of Vertebrates
         physical_object_type:
           type: array
+          description: 'Type of the Object, typically "Biological Specimen" or "Cultural Heritage Object".'
           items:
             type: string
-        physical_object_taxonomy:
+            example: Biological Specimen
+        physical_object_taxonomy_name:
           type: array
+          description: 'Binomial taxonomic name, in most cases a combination of genus and species names. For objects identified only with higher order taxonomy, this may take the form of a higher order name followed by "indet."'
           items:
             type: string
+            x-stoplight:
+              id: uafr8zm9zx65k
+            example: Puma concolor
+        physical_object_taxonomy_gbif:
+          type: array
+          description: 'List of taxonomic names associated with this physical object through a GBIF aggregated taxonomy, if one is available.'
+          items:
+            type: string
+            x-stoplight:
+              id: 0u6pb2oe3r8od
+            example: Felidae
         part:
           type: array
+          description: |-
+            The portion or product of organism morphology, behaviour, environment, etc. that is either predominantly shown or particularly well exemplified by the media resource, denoted by an IRI.
+            http://rs.tdwg.org/ac/terms/subjectPart
           items:
             type: string
+            example: Cranium
         side:
           type: array
+          description: |-
+            The side of a larger object on which is located a represented component part, if media represents a component part of a larger whole object. Values must be from the Side controlled vocabulary (http://www.morphosource.org/terms/ms/Side). Values are somewhat oriented toward objects with bilateral symmetry, but may in some cases be applied for objects with other kinds of symmetry.
+            https://www.morphosource.org/terms/ms/side
           items:
             type: string
+            example: Midline
         creator:
           type: array
+          description: |-
+            Examples of a Creator include a person, an organization, or a service. Typically, the name of a Creator should be used to indicate the entity.
+
+            An entity primarily responsible for making the resource.
+            http://purl.org/dc/elements/1.1/creator
           items:
             type: string
+            example: Jane Smith
         short_description:
           type: array
+          description: |-
+            Brief summary description of Media. This could include a brief summary of what is represented in the Media or the context surrounding the Media.
+            https://www.morphosource.org/terms/ms/shortDescription
           items:
             type: string
+            example: Mesh with texture and color of Puma concolor cranium
         description:
           type: array
+          description: |-
+            Description may include but is not limited to: an abstract, a table of contents, a graphical representation, or a free-text account of the resource.
+
+            An account of the resource.
+            http://purl.org/dc/elements/1.1/description
           items:
             type: string
+            example: Longer description with additional context of Media scanning or identity not captured in other fields.
         ip_holder:
           type: array
+          description: |-
+            List of holders of intellectual property rights (copyright or license-based) for the Media.
+            https://www.morphosource.org/terms/ms/rightsHolder
           items:
             type: string
+            example: Museum of Biological Specimens
         copyright_statement:
           type: array
+          description: |-
+            Standardized rights statement used to communicate the copyright and/or reuse status of digital objects. Values must be from the Rights Statement controlled vocabulary (https://rightsstatements.org).
+            https://www.morphosource.org/terms/ms/rightsStatement
           items:
             type: string
+            example: 'http://rightsstatements.org/vocab/NKC/1.0/'
         license:
           type: array
+          description: |-
+            Recommended practice is to identify the license document with a URI. If this is not possible or feasible, a literal value that identifies the license may be provided.
+
+            A legal document giving official permission to do something with the resource.
+            http://purl.org/dc/terms/license
           items:
             type: string
+            example: 'http://www.morphosource.org/terms/licenseUnknown/'
         morphosource_use_agreement_type:
           type: array
+          description: |-
+            Type of MorphoSource use agreement that users must agree to in order to download Media and that is packaged with an associated Media download. Values must be from the Use Agreement Type controlled vocabulary (http://www.morphosource.org/terms/mscv/UseAgreementType).
+            https://www.morphosource.org/terms/ms/morphosourceUseAgreementType
           items:
             type: string
+            example: Standard
         permits_commercial_use:
           type: array
+          description: |
+            Whether commercial use of Media is permitted. Values must be from the Commercial Use Permission controlled vocabulary (http://www.morphosource.org/terms/mscv/CommercialUsePermission).
+            https://www.morphosource.org/terms/ms/permitsCommercialUse
           items:
             type: string
+            example: CommercialUseNotPermitted
         permits_3d_use:
           type: array
+          description: |-
+            Whether Media may be 3D printed freely, may be 3D printed in limited ways, or if 3D printing is prohibited. Values must be from the 3D Printing Permission controlled vocabulary (http://www.morphosource.org/terms/mscv/3DPrintingPermission).
+            https://www.morphosource.org/terms/ms/permits3DUse
           items:
             type: string
+            example: 3DPrintingLimited
         required_archival_of_published_derivatives:
           type: array
+          description: |-
+            Whether and how future derivatives created from Media must be rearchived on a public-facing digital repository such as MorphoSource. Values may include mandatory requirements or optional suggestions. Values must be from Derivative Rearchival Statement controlled vocabulary (http://www.morphosource.org/terms/mscv/DerivativeRearchivalStatement).
+            https://www.morphosource.org/terms/ms/requiredArchivalOfPublishedDerivatives
           items:
             type: string
+            example: OnAnyRepository
         funding:
           type: array
+          description: |-
+            Text description of organizations or individuals who funded the creation of the resource.
+            https://www.morphosource.org/terms/ms/funding
           items:
             type: string
+            example: NSF 123456789
         publisher:
           type: array
+          description: |-
+            Examples of a Publisher include a person, an organization, or a service. Typically, the name of a Publisher should be used to indicate the entity.
+
+            An entity responsible for making the resource available.
+            http://purl.org/dc/elements/1.1/publisher
           items:
             type: string
         cite_as:
           type: array
+          description: |-
+            Instructions and guidelines for the citation of a Media. This should include additional instructions beyond those included in other metadata fields or in any download usage agreement.
+            https://www.morphosource.org/terms/ms/citeAs
           items:
             type: string
         ark:
           type: array
+          description: |
+            Persistent identifier for MorphoSource Media automatically created on Media submission. ARKs can apply to both unpublished and published media.
+            https://www.morphosource.org/terms/ms/ark
           items:
             type: string
         doi:
           type: array
+          description: |-
+            Persistent identifier for MorphoSource Media created only on user request. DOIs can apply only to published media.
+            https://www.morphosource.org/terms/ms/doi
           items:
             type: string
         external_identifier:
           type: array
+          description: |-
+            Used to provide third-party or external identifiers, which may be URIs or UUIDs, for this Media.
+            http://purl.org/dc/terms/identifier
           items:
             type: string
         external_media_url:
           type: array
+          description: |-
+            URL for additional resource that might provide additional information about the Media or Physical Object.
+            https://www.morphosource.org/terms/ms/relatedURL
           items:
             type: string
         visibility:
           type: array
+          description: |-
+            Publication status, denoting whether or not Media may be found in public search and whether or not Media files may be downloaded. Values must be from Publication Status controlled vocabulary (http://www.morphosource.org/terms/ms/PublicationStatus).
+            https://www.morphosource.org/terms/ms/visibility
           items:
             type: string
+            example: Restricted
         in_collections:
           type: array
+          description: Names of projects and teams to which the Media belongs.
           items:
             type: string
         date_uploaded:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date of upload of the resource.
+            https://www.morphosource.org/terms/ms/dateUploaded
           items:
             type: string
+            example: '2022-02-02T19:00:37Z'
         date_modified:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date on which the resource was changed.
+            https://www.morphosource.org/terms/ms/dateModified
           items:
             type: string
+            example: '2022-02-02T19:00:37Z'
         legacy_media_group_id:
           type: array
+          description: |-
+            MorphoSource-specific unique ID identifier that was used to group Media together in the now-defunct 1.0 version of the MorphoSource repository. In MorphoSource 1.0, Media groups were used to collect all media derived from the same Imaging Event. Media groups are no longer used, with media-to-media imaging and processing event relationships now being used instead to track hierarchical relationships between Media. Only present if Media was originally contributed to MorphoSource 1.0. Different from morphosource:ID identifier.
+            https://www.morphosource.org/terms/ms/legacyMediaGroupID
           items:
             type: string
         legacy_media_file_id:
           type: array
+          description: |-
+            MorphoSource-specific unique ID identifier that was used to represent a Media in the now-defunct 1.0 version of the MorphoSource repository. Only present if Media was originally contributed to MorphoSource 1.0. Different from morphosource:ID identifier.
+            https://www.morphosource.org/terms/ms/legacyMediaFileID
           items:
             type: string
         x_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the X axis, for Media with pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to Image and CTImageSeries media.
+            https://www.morphosource.org/terms/ms/xSpacing
           items:
             type: string
+            example: '0.154'
         y_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the Y axis, for Media with pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to Image and CTImageSeries media.
+            https://www.morphosource.org/terms/ms/ySpacing
           items:
             type: string
+            example: '0.154'
         z_pixel_spacing:
           type: array
+          description: |-
+            Distance between centers of adjacent pixels in the Z axis, for Media with 3D pixel data where pixel spacing corresponds to real-world length measurement. Unit of measurement is described by morphosource:unit. Applies to CTImageSeries media.
+            http://www.morphosource.org/terms/ms/zSpacing
           items:
             type: string
+            example: '0.154'
         slice_thickness:
           type: array
+          description: |-
+            Nominal slice thickness, in mm.
+            http://purl.org/healthcarevocab/v1#SliceThickness
           items:
             type: string
         unit:
           type: array
+          description: |-
+            Length measurement unit. For Mesh Media, this is the length unit associated with the 3D coordinate space of the mesh. For CTImageSeries Media, this is the length unit for X/Y/Z pixel spacing. Values must be from the Length Measurement Unit controlled vocabulary (http://www.morphosource.org/terms/ms/LengthMeasurementUnit).
+            https://www.morphosource.org/terms/ms/unit
           items:
             type: string
+            example: Mm
         number_of_images_in_set:
           type: array
+          description: |-
+            For Media with a ZIP archive with many component files, this is the number of files in the primary image collection in a CT image stack or photogrammetry image collection. This only applies to CTImageSeries or PhotogrammetryImageSeries Media.
+            https://www.morphosource.org/terms/ms/numberOfImagesInSet
           items:
             type: string
         data_manager:
           type: array
+          description: |-
+            The user that has the highest level of management control over a Media or another Work record. For Media, this user is also known as the Data Manager.
+            https://www.morphosource.org/terms/ms/owner
           items:
             type: string
+            example: Jane Smith
         data_depositor:
           type: array
+          description: |-
+            The MorphoSource user who uploaded the Media. May or may not also be the Media Data Manager.
+            https://www.morphosource.org/terms/ms/depositor
           items:
             type: string
+            example: Jane Smith
+        data_sponsor:
+          type: array
+          description: The entity covering costs of data storage for this Media on MorphoSource.
+          items:
+            type: string
+            example: Jane Smith
+            x-stoplight:
+              id: 9nmj5frrts1im
     Physical-Object:
       title: Physical Object
       x-stoplight:
@@ -1038,66 +1482,128 @@ components:
       properties:
         id:
           type: array
+          description: |-
+            Morphosource-specific unique ID identifier for a Work (Media, Organization, Device, etc.).
+            https://www.morphosource.org/terms/ms/PhysicalObject#ID
           items:
             type: string
         title:
           type: array
+          description: |-
+            For biological specimens, the combined institution code, collection code, and catalog number separated by colons as a Darwin Core triplet. For a cultural heritage object, this is either the Darwin Core triplet or a short object tile. 
+            http://purl.org/dc/terms/title
           items:
             type: string
         organization:
           type: array
+          description: |-
+            Organization name of the organization that manages the physical object from which the Media was imaged.
+
+            Organization record class: https://www.morphosource.org/terms/ms/Organization
           items:
             type: string
         institution_code:
           type: array
+          description: |-
+            The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.
+            http://rs.tdwg.org/dwc/terms/institutionCode
           items:
             type: string
         collection_code:
           type: array
+          description: |-
+            The name, acronym, coden, or initialism identifying the collection or data set from which the record was derived.
+            http://rs.tdwg.org/dwc/terms/collectionCode
           items:
             type: string
         catalog_number:
           type: array
+          description: |-
+            An identifier (preferably unique) for the record within the data set or collection.
+            http://rs.tdwg.org/dwc/terms/catalogNumber
           items:
             type: string
         occurrence_id:
           type: array
+          description: |-
+            Recommended best practice is to use a persistent, globally unique identifier.
+
+            An identifier for the Occurrence (as opposed to a particular digital record of the occurrence). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the occurrenceID globally unique.
+            http://rs.tdwg.org/dwc/terms/occurrenceID
           items:
             type: string
         idigbio_uuid:
           type: array
+          description: |-
+            Global unique identifier for the Biological Specimen provided by iDigBio and used as the primary identifier of the Biological Specimen's record in the iDigBio aggregator if present. This is sometimes used in addition to more general identifiers or Darwin Core triplets (institution code : collection code : catalog number) to uniquely identify Biological Specimen.
+            https://www.morphosource.org/terms/ms/idigbioUUID
           items:
             type: string
         idigbio_recordset_id:
           type: array
+          description: |-
+            An identifier for an entire museum, institution, or laboratory specimen collection which includes the Biological Specimen. May be a global unique identifier or an identifier specific to a collection or institution.
+            https://www.morphosource.org/terms/ms/idigbioRecordsetID
           items:
             type: string
         type:
           type: array
+          description: 'Type of the Object, typically "Biological Specimen" or "Cultural Heritage Object".'
           items:
             type: string
         vouchered:
           type: array
+          description: |-
+            Whether the Biological Specimen is a holotype or not. If present, value must be "Yes" or "No".
+            https://www.morphosource.org/terms/ms/isTypeSpecimen
           items:
             type: string
-        taxonomy:
+        taxonomy_name:
           type: array
+          description: 'Binomial taxonomic name, in most cases a combination of genus and species names. For objects identified only with higher order taxonomy, this may take the form of a higher order name followed by "indet."'
           items:
             type: string
+            x-stoplight:
+              id: cybhh61iz02gf
+        taxonomy_gbif:
+          type: array
+          description: 'List of taxonomic names associated with this physical object through a GBIF aggregated taxonomy, if one is available.'
+          items:
+            type: string
+            x-stoplight:
+              id: sue4ujsxzbp26
         sex:
           type: array
+          description: |-
+            Recommended best practice is to use a controlled vocabulary.
+
+            The sex of the biological individual(s) represented in the Occurrence.
+            http://rs.tdwg.org/dwc/terms/sex
           items:
             type: string
         creator:
           type: array
+          description: |-
+            Entity responsible for collecting or creating the object.
+            http://purl.org/dc/elements/1.1/creator
           items:
             type: string
         date_uploaded:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date of upload of the resource. 
+            https://www.morphosource.org/terms/ms/dateUploaded
           items:
             type: string
         date_modified:
           type: array
+          description: |-
+            Recommended practice is to describe the date, date/time, or period of time as recommended for the property Date, of which this is a subproperty.
+
+            Date on which the resource was changed. 
+            https://www.morphosource.org/terms/ms/dateModified
           items:
             type: string
     Catalog-Pages-Information:
