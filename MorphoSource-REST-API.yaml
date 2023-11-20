@@ -29,6 +29,7 @@ info:
     | Endpoint | Description |
     | --- | --- |
     | [/api/media/{media-id}](https://morphosource.stoplight.io/docs/morphosource-api/b474e3d7c2ccc-get-individual-media-record) | Get individual media record |
+    | [/api/media/{media-id}/file-metadata](https://morphosource.stoplight.io/docs/morphosource-api/c7dcuud1iq44q-get-individual-media-file-metadata) | Get individual media file metadata |
     | [/api/media](https://morphosource.stoplight.io/docs/morphosource-api/2d534286cca2e-search-media-records) | Search media records |
     | [/api/download/{media-id}](https://morphosource.stoplight.io/docs/morphosource-api/stzmm22vruz2k-download-media-file) | Download media file |
 
