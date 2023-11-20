@@ -3,7 +3,7 @@ x-stoplight:
   id: rm6bqdolcidct
 info:
   title: MorphoSource REST API
-  version: 0.5.0
+  version: 0.6.0
   summary: MorphoSource REST API to retrieve metadata for repository records
   contact:
     name: Julie Winchester
@@ -30,6 +30,7 @@ info:
     | --- | --- |
     | [/api/media/{media-id}](https://morphosource.stoplight.io/docs/morphosource-api/b474e3d7c2ccc-get-individual-media-record) | Get individual media record |
     | [/api/media/{media-id}/file-metadata](https://morphosource.stoplight.io/docs/morphosource-api/c7dcuud1iq44q-get-individual-media-file-metadata) | Get individual media file metadata |
+    | [/api/media/{media-id}/iiif/manifest](https://morphosource.stoplight.io/docs/morphosource-api/3clfct1x09z8k-get-individual-media-iiif-manifest) | Get individual media IIIF manifest |
     | [/api/media](https://morphosource.stoplight.io/docs/morphosource-api/2d534286cca2e-search-media-records) | Search media records |
     | [/api/download/{media-id}](https://morphosource.stoplight.io/docs/morphosource-api/stzmm22vruz2k-download-media-file) | Download media file |
 
@@ -2390,22 +2391,6 @@ components:
               description:
                 type: string
                 default: You must be logged in to do that!
-    403-Not-Authorized:
-      description: 'Standard response for not authorized. As of 2023, this response is deprecated. Endpoints will eventually return 404 status code and responses instead.'
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                default: 403
-              message:
-                type: string
-                default: Not Authorized
-              description:
-                type: string
-                default: You are not authorized to access this content.
     404-Not-Found:
       description: 'Standard response for a resource not found, unavailable, or inaccessible by the current user.'
       content:
