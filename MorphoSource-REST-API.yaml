@@ -289,6 +289,8 @@ paths:
                       biological_specimen || cultural_heritage_object:
                         $ref: '#/components/schemas/Physical-Object'
               examples: {}
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-physical-object-id
       description: |-
         Returns metadata for a single Physical Object (Biological Specimen or Cultural Heritage Object) record.
@@ -445,6 +447,8 @@ paths:
                       organization:
                         $ref: '#/components/schemas/Organization'
               examples: {}
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-organization-id
       description: |-
         Returns metadata for a single Organization (a museum, institutional, or departmental collection of physical objects) record.
@@ -574,6 +578,8 @@ paths:
                       collection:
                         $ref: '#/components/schemas/Project-or-Team'
               examples: {}
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-id
       description: |-
         Returns metadata for a single Project or Team record.
@@ -680,8 +686,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-media
       description: |-
         Returns metadata for media records in a project or team.
@@ -722,8 +728,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-biological-specimens
       description: |-
         Returns metadata for biological specimen records in a project or team.
@@ -770,8 +776,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-cultural-heritage-objects
       description: |-
         Returns metadata for cultural heritage object records in a project or team.
@@ -836,8 +842,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-media-download-counts
       description: |-
         Returns numbers of downloads, download use intent and user demographics, and record metadata for media records in a project or team. This route returns media record metadata and summed counts of downloads, unique download users, and download use intent and download user demographics for each media record as a separate object. This can be compared with the `media-downloads` route, which returns each individual media download as its own separate object
@@ -878,8 +884,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-media-downloads
       description: |-
         Returns complete information for downloads of media in a project or team. This route returns each individual media download as its own separate object. This can be compared with the `media-download-counts` route, which returns media record metadata and summed counts of downloads, unique download users, and download use intent and download user demographics for each media record as a separate object.
@@ -920,8 +926,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-project-media-requests
       description: |-
         Returns complete information for all requests to download restricted media in project or team.
@@ -989,8 +995,8 @@ paths:
               examples: {}
         '401':
           $ref: '#/components/responses/401-Authentication-Required'
-        '403':
-          $ref: '#/components/responses/403-Not-Authorized'
+        '404':
+          $ref: '#/components/responses/404-Not-Found'
       operationId: get-api-team-view-only-media-projects
       description: |-
         Some media in a team may not be owned by that team. In other words, the team may only have view access to this media. This route returns a list of projects containing media within a team that the team does not own.
@@ -1940,7 +1946,7 @@ components:
       description: ''
   responses:
     401-Authentication-Required:
-      description: Standard response for authentication required.
+      description: 'Standard response for authentication required. Returned in cases where an API endpoint requires an API Key associated with an existing and active MorphoSource user, but a valid API Key was not supplied with the request.'
       content:
         application/json:
           schema:
