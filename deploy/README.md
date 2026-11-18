@@ -46,9 +46,8 @@ older directory under `api-docs/releases/`.
   branch, so only default-branch pipelines can read them.
 - **Registry pull access.** The `gitlab-container-registry` pull secret in each
   namespace must be able to read this project's registry.
-- **nginx.** Add the locations in [nginx-api-docs.conf](nginx-api-docs.conf) to the
-  nginx config in the helm-chart repo (`charts/hyrax/values.dev.yaml` and
-  `values.prod.yaml`) and deploy. Until then the files are published but not served.
+- **nginx.** Requires a one-time Helm change adding the `/api/docs` nginx location
+  in each environment; until that's deployed, the files are published but not served.
 
 ## Upgrading Scalar
 
