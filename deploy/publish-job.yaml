@@ -1,0 +1,44 @@
+# One-shot Job that copies the API docs image's site onto the nginx-public PVC.
+# __JOB_NAME__, __IMAGE__ and __RELEASE__ are filled in by deploy/deploy.sh.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: __JOB_NAME__
+  labels:
+    app: api-docs-publish
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 600
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app: api-docs-publish
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      imagePullSecrets:
+        - name: gitlab-container-registry
+      containers:
+        - name: publish
+          image: __IMAGE__
+          imagePullPolicy: IfNotPresent
+          command: ["/usr/local/bin/publish-site"]
+          env:
+            - name: RELEASE
+              value: "__RELEASE__"
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              memory: 256Mi
+          volumeMounts:
+            - name: nginx-public
+              mountPath: /mnt/public-pvc
+      volumes:
+        - name: nginx-public
+          persistentVolumeClaim:
+            claimName: nginx-public

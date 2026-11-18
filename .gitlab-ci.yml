@@ -1,0 +1,70 @@
+# Deploys the Scalar API docs (docs/ + MorphoSource-REST-API.yaml) to self-hosted
+# MorphoSource (OpenShift): builds a docs image and runs a Job that copies the site
+# onto the nginx-public volume, served at /api/docs/. The site has no build-time
+# settings, so one image is built and published to both dev (staging) and production.
+stages:
+  - build
+  - deploy
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+variables:
+  IMAGE: $CI_REGISTRY_IMAGE/api-docs:$CI_COMMIT_SHORT_SHA
+
+# Runs scripts/build-docs.sh, which fails the build if the site doesn't assemble
+# (Scalar checksum mismatch, or a missing or empty file).
+build_image:
+  stage: build
+  image: docker:27
+  services:
+    - name: docker:27-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY"
+  script:
+    - docker build --tag "$IMAGE" .
+    - docker push "$IMAGE"
+  tags:
+    - oit-shared
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+.deploy:
+  stage: deploy
+  image:
+    name: gitlab-registry.oit.duke.edu/duke_openshift_users/community-supported-resources/build-helper:alpine
+  needs:
+    - build_image
+  variables:
+    RELEASE: $CI_COMMIT_SHORT_SHA
+  script:
+    - sh deploy/deploy.sh
+  tags:
+    - oit-shared
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+deploy_dev:
+  extends: .deploy
+  resource_group: api-docs-dev
+  environment:
+    name: dev
+    url: https://morphosource-dev.oit.duke.edu/api/docs/
+  before_script:
+    - oc login $K8S_URL_DEV --token=$K8S_TOKEN_DEV
+    - oc project $K8S_NAMESPACE_DEV
+
+deploy_prod:
+  extends: .deploy
+  resource_group: api-docs-prod
+  environment:
+    name: production
+    url: https://www.morphosource.org/api/docs/
+  before_script:
+    - oc login $K8S_URL_PROD --token=$K8S_TOKEN_PROD
+    - oc project $K8S_NAMESPACE_PROD
