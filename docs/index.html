@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MorphoSource API Docs</title>
+    <meta name="description" content="Reference documentation for the MorphoSource REST API." />
+    <link rel="icon" type="image/svg+xml" href="assets/logo-square-white-bg-blue.svg" />
+    <style>
+      /* MorphoSource brand colors (https://www.morphosource.org/docs/about-morphosource/logo-and-branding) */
+      :root {
+        --ms-blue: #003880;
+        --ms-dark-blue: #002c64;
+        --ms-orange: #f68628;
+        --ms-header-height: 56px;
+        --ms-font: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      }
+
+      body {
+        margin: 0;
+        background: #fff;
+        font-family: var(--ms-font);
+      }
+
+      /* Top bar, styled after the MorphoSource site masthead */
+      .ms-header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-sizing: border-box;
+        height: var(--ms-header-height);
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        padding: 0 16px;
+        background: var(--ms-blue);
+        font-family: var(--ms-font);
+      }
+      .ms-header .ms-logo {
+        display: flex;
+        align-items: center;
+        height: 100%;
+      }
+      .ms-header .ms-logo img {
+        height: 38px;
+        width: auto;
+        display: block;
+      }
+      .ms-header .ms-title {
+        color: #fff;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        padding-left: 24px;
+        border-left: 1px solid rgba(255, 255, 255, 0.35);
+        line-height: 28px;
+      }
+      .ms-header nav {
+        margin-left: auto;
+        display: flex;
+        gap: 20px;
+      }
+      .ms-header nav a {
+        color: #fff;
+        font-size: 14px;
+        text-decoration: none;
+        opacity: 0.9;
+      }
+      .ms-header nav a:hover,
+      .ms-header nav a:focus-visible {
+        opacity: 1;
+        text-decoration: underline;
+        text-decoration-color: var(--ms-orange);
+        text-underline-offset: 4px;
+      }
+      @media (max-width: 720px) {
+        .ms-header .ms-title,
+        .ms-header nav {
+          display: none;
+        }
+        .ms-header .ms-logo img {
+          height: 32px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="ms-header">
+      <a class="ms-logo" href="https://www.morphosource.org">
+        <img src="assets/logo-horizontal-white.png" alt="MorphoSource 3D Data Repository" width="800" height="202" />
+      </a>
+      <span class="ms-title">REST API</span>
+      <nav aria-label="MorphoSource links">
+        <a href="https://www.morphosource.org">MorphoSource</a>
+        <a href="https://www.morphosource.org/docs">Documentation</a>
+        <a href="https://github.com/MorphoSource/morphosource-api">OpenAPI schema</a>
+      </nav>
+    </header>
+
+    <div id="app"></div>
+
+    <!-- Scalar is vendored into vendor/ by scripts/build-docs.sh (pinned version and checksum). -->
+    <script src="vendor/scalar-api-reference.js"></script>
+    <script src="scalar-init.js"></script>
+  </body>
+</html>
