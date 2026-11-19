@@ -3,7 +3,7 @@ x-stoplight:
   id: rm6bqdolcidct
 info:
   title: MorphoSource REST API
-  version: 0.6.0
+  version: 0.7.0
   summary: MorphoSource REST API to retrieve metadata for repository records
   contact:
     name: Julie Winchester
@@ -61,6 +61,12 @@ info:
     | [/api/projects/{project-or-team-id}/media-downloads](https://morphosource.stoplight.io/docs/morphosource-api/ecc384615696f-get-downloads-of-media-in-project-or-team) | Get downloads of media in project or team |
     | [/api/projects/{project-or-team-id}/media-requests](https://morphosource.stoplight.io/docs/morphosource-api/0e6860f269b72-get-requests-to-download-restricted-media-in-project-or-team) | Get requests to download restricted media in project or team |
     | [/api/projects/{team-id}/view-only-media-projects](https://morphosource.stoplight.io/docs/morphosource-api/67b9b4443769a-get-projects-containing-media-in-a-team-but-not-owned-by-team) | Get projects containing media in a team but not owned by team |
+
+    ### Media Cart
+
+    | Endpoint | Description |
+    | --- | --- |
+    | [/api/media-cart](https://morphosource.stoplight.io/docs/morphosource-api/m3dc4rtq9x2vk-get-media-cart-contents) | Get media cart contents |
 
     ## Other Resources
 
@@ -1195,6 +1201,143 @@ paths:
         in: path
         required: true
         description: Unique team record ID. Should be a string of 9 numeric characters.
+  /api/media-cart:
+    get:
+      summary: Get media cart contents
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: object
+                    properties:
+                      media_cart:
+                        type: array
+                        description: Media Cart items on the current page, ordered by date added to the cart (most recently added first).
+                        items:
+                          $ref: '#/components/schemas/Media-Cart-Item'
+                      pages:
+                        $ref: '#/components/schemas/Catalog-Pages-Information'
+              examples:
+                Media cart contents:
+                  value:
+                    response:
+                      media_cart:
+                        - id: 48213
+                          media_id: '000200043'
+                          media_title: 'Skull [Mesh] [CT]'
+                          media_url: 'https://www.morphosource.org/concern/media/000200043'
+                          media_api_url: 'https://www.morphosource.org/api/media/000200043'
+                          media_available: true
+                          physical_object:
+                            id: '000200041'
+                            title: 'MBSC:Mammals:12345'
+                            type: Biological Specimen
+                            taxonomy: Puma concolor
+                          downloadable: true
+                          restricted: false
+                          request_status: Approved
+                          date_added: '2026-10-02T14:21:07Z'
+                          date_requested: '2026-10-02T14:25:43Z'
+                          date_approved: '2026-10-04T09:12:30Z'
+                          date_expired: null
+                          date_downloaded: '2026-10-04T10:03:18Z'
+                        - id: 47990
+                          media_id: '000200158'
+                          media_title: 'Cranium [CT Image Series] [CT]'
+                          media_url: 'https://www.morphosource.org/concern/media/000200158'
+                          media_api_url: 'https://www.morphosource.org/api/media/000200158'
+                          media_available: true
+                          physical_object:
+                            id: '000200150'
+                            title: 'MBSC:Mammals:67890'
+                            type: Biological Specimen
+                            taxonomy: Felis catus
+                          downloadable: false
+                          restricted: true
+                          request_status: Not Requested
+                          date_added: '2026-09-18T16:40:55Z'
+                          date_requested: null
+                          date_approved: null
+                          date_expired: null
+                          date_downloaded: null
+                        - id: 47512
+                          media_id: '000199870'
+                          media_title: null
+                          media_url: null
+                          media_api_url: null
+                          media_available: false
+                          physical_object: null
+                          downloadable: false
+                          restricted: true
+                          request_status: Not Requested
+                          date_added: '2026-08-30T11:05:12Z'
+                          date_requested: null
+                          date_approved: null
+                          date_expired: null
+                          date_downloaded: null
+                      pages:
+                        current_page: 1
+                        next_page: 2
+                        prev_page: null
+                        total_pages: 5
+                        limit_value: 3
+                        offset_value: 0
+                        total_count: 14
+                        first_page?: true
+                        last_page?: false
+        '400':
+          $ref: '#/components/responses/400-Bad-Request'
+        '401':
+          $ref: '#/components/responses/401-Authentication-Required'
+      operationId: get-api-media-cart
+      x-stoplight:
+        id: m3dc4rtq9x2vk
+      description: |-
+        Returns the contents of the Media Cart belonging to the MorphoSource user who owns the supplied API key. This provides the same list of media shown on the Media Cart page of the user's MorphoSource dashboard, in a single paged list.
+
+        Each Media Cart item includes basic metadata for the Media and its associated Physical Object, whether the user can currently download the Media (`downloadable`) or must request and be granted permission to download it (`restricted`), the status of any download request for the item (`request_status`), and dates relating to the item's history in the cart. Items are returned most recently added first. Results are paged in the same format as catalog search endpoints such as `/api/media`, with 10 items per page by default and a maximum of 1,000 items per page. Items can optionally be filtered to show only downloadable or only restricted Media using the `access` parameter.
+
+        If a Media in the cart has since been deleted or has otherwise become unavailable, the cart item is still returned, with `media_available` set to `false` and Media and Physical Object metadata fields set to `null`. Such items are always reported as restricted.
+
+        To use this endpoint, you must provide an API key associated with an active MorphoSource user account. A 401 Unauthorized response will be returned if no API key is present or if the API key is not associated with a valid user. A 400 Bad Request response will be returned if an invalid value is provided for the `access`, `page`, or `per_page` parameters.
+      parameters:
+        - schema:
+            type: string
+            enum:
+              - downloadable
+              - restricted
+            example: downloadable
+          in: query
+          name: access
+          description: 'Filter cart items by download access. `downloadable` returns only items the user can currently download; `restricted` returns only items the user must request permission to download. If omitted, all cart items are returned.'
+        - schema:
+            type: integer
+            default: 1
+            minimum: 1
+            format: int32
+            example: 2
+          in: query
+          name: page
+          description: Current results page. Displays number of results equal to per_page parameter at current page increment. Must be a positive integer.
+        - schema:
+            type: integer
+            default: 10
+            maximum: 1000
+            minimum: 1
+            format: int32
+            example: 50
+          in: query
+          name: per_page
+          description: Number of results to display. Must be a positive integer. Values greater than 1000 are treated as 1000.
+      security:
+        - API-Key: []
+      tags:
+        - Media cart endpoints
 components:
   schemas:
     Media:
@@ -2368,6 +2511,126 @@ components:
         - Personal Interest
         - 3D Printing
         - Commercial Use
+    Media-Cart-Item:
+      title: Media-Cart-Item
+      x-stoplight:
+        id: c4rt1tm8vq2ps
+      type: object
+      description: Single item in a user's Media Cart, with basic Media and Physical Object metadata and download access and request status.
+      properties:
+        id:
+          type: integer
+          description: Unique ID of the Media Cart item. This is distinct from the Media ID.
+          example: 48213
+        media_id:
+          type: string
+          description: Unique ID of the Media in the cart. A string of 9 numeric characters.
+          example: '000200043'
+        media_title:
+          type:
+            - string
+            - 'null'
+          description: Title of the Media. Null if the Media is not available.
+          example: 'Skull [Mesh] [CT]'
+        media_url:
+          type:
+            - string
+            - 'null'
+          description: URL of the Media page on MorphoSource. Null if the Media is not available.
+          example: 'https://www.morphosource.org/concern/media/000200043'
+        media_api_url:
+          type:
+            - string
+            - 'null'
+          description: URL of the Media record in the MorphoSource API (`/api/media/{media-id}`). Null if the Media is not available.
+          example: 'https://www.morphosource.org/api/media/000200043'
+        media_available:
+          type: boolean
+          description: Whether the Media is still available. False if the Media has been deleted since being added to the cart.
+          example: true
+        physical_object:
+          type:
+            - object
+            - 'null'
+          description: Basic metadata for the Physical Object represented by the Media. Null if the Media is not available or has no associated Physical Object.
+          properties:
+            id:
+              type:
+                - string
+                - 'null'
+              description: Unique Physical Object record ID.
+              example: '000200041'
+            title:
+              type:
+                - string
+                - 'null'
+              description: Physical Object title.
+              example: 'MBSC:Mammals:12345'
+            type:
+              type:
+                - string
+                - 'null'
+              description: Physical Object type.
+              example: Biological Specimen
+            taxonomy:
+              type:
+                - string
+                - 'null'
+              description: Taxonomic name of the Physical Object, if any.
+              example: Puma concolor
+        downloadable:
+          type: boolean
+          description: 'Whether the user can currently download the Media, e.g. because it is published as open download, the user owns or reviews it, or a download request has been approved.'
+          example: true
+        restricted:
+          type: boolean
+          description: Whether the user must request and be granted permission to download the Media. Always the opposite of `downloadable`.
+          example: false
+        request_status:
+          type: string
+          description: Status of the download request for this cart item.
+          enum:
+            - Not Requested
+            - Requested
+            - Approved
+            - Denied
+            - Canceled
+            - Expired
+            - Cleared
+          example: Approved
+        date_added:
+          type: string
+          format: date-time
+          description: Date and time the item was added to the cart (ISO 8601).
+          example: '2026-10-02T14:21:07Z'
+        date_requested:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          description: Date and time download permission was requested (ISO 8601). Null if not requested.
+          example: '2026-10-02T14:25:43Z'
+        date_approved:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          description: Date and time the download request was approved (ISO 8601). Null if not approved.
+          example: '2026-10-04T09:12:30Z'
+        date_expired:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          description: Date and time the approved download permission expired (ISO 8601). Null if not expired.
+          example: null
+        date_downloaded:
+          type:
+            - string
+            - 'null'
+          format: date-time
+          description: Date and time the Media was downloaded via this cart item (ISO 8601). Null if not downloaded.
+          example: '2026-10-04T10:03:18Z'
   securitySchemes:
     API-Key:
       name: Authorization
